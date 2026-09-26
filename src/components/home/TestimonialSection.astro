@@ -57,7 +57,7 @@ const gridCols = 'lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-14';
               >
                 <div class={`grid items-stretch gap-8 ${gridCols}`}>
                   <!-- Foto + kartu jam -->
-                  <div class="relative aspect-[16/10] overflow-hidden rounded-[4px] border border-hairline bg-bg-panel">
+                  <div class="relative aspect-[16/10] self-start overflow-hidden rounded-[4px] border border-hairline bg-bg-panel">
                     <img
                       src={t.image}
                       alt={t.imageAlt}
@@ -232,6 +232,8 @@ const gridCols = 'lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-14';
     let lastX = 0;
     let lastT = 0;
     let velocity = 0; // px/ms, arah gerak pointer
+    let pendingLeft: number | null = null; // nilai scrollLeft yang menunggu di-apply di frame berikutnya
+    let rafId = 0;
 
     // Cegah drag bawaan browser pada gambar & tautan (penyebab umum drag "tidak mau jalan").
     track.addEventListener('dragstart', (e) => e.preventDefault());
@@ -273,12 +275,27 @@ const gridCols = 'lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-14';
       lastX = e.clientX;
       lastT = now;
 
-      track.scrollLeft = startScroll - delta;
+      // Jangan set scrollLeft langsung di sini — pointermove bisa nembak puluhan kali
+      // per detik, dan set scrollLeft berkali-kali dalam satu frame bikin browser
+      // sempat menggambar frame yang belum sinkron (foto & teks numpuk sesaat).
+      // Simpan nilai targetnya, lalu apply sekali per frame lewat requestAnimationFrame.
+      pendingLeft = startScroll - delta;
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          rafId = 0;
+          if (pendingLeft !== null) track.scrollLeft = pendingLeft;
+        });
+      }
     });
 
     function endDrag() {
       if (!pressed) return;
       pressed = false;
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+      pendingLeft = null;
       if (!dragging) return;
       dragging = false;
 

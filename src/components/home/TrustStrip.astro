@@ -1,0 +1,56 @@
+---
+// Strip kepercayaan tepat setelah hero. Semua klaim di sini sudah ada di situs
+// (AUTHENTICITY_NOTE di data/products.ts, teks testimoni, dan field warranty tiap jam).
+const items = [
+  {
+    title: '100% Authentic or Moneyback',
+    desc: 'Kami hanya menjual jam yang terjamin asli.',
+    svg: '<path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/>',
+  },
+  {
+    title: 'Quality check 10x+',
+    desc: 'Setiap jam diperiksa lebih dari 10 kali oleh tim Jubejam.',
+    svg: '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2"/>',
+  },
+  {
+    title: 'Garansi jelas',
+    desc: 'Garansi dan kelengkapan tercantum di setiap jam.',
+    svg: '<circle cx="12" cy="9" r="5"/><path d="M9 13.5L8 21l4-2 4 2-1-7.5"/>',
+  },
+  {
+    title: '980+ jam terjual',
+    desc: 'Lewat online dan offline store kami.',
+    svg: '<circle cx="12" cy="12" r="7"/><path d="M12 8v4l2.5 1.5"/>',
+  },
+];
+---
+<section aria-label="Jaminan Jubejam" class="border-y border-hairline bg-bg">
+  <ul class="mx-auto grid max-w-[1180px] grid-cols-2 lg:grid-cols-4">
+    {
+      items.map((it, i) => (
+        <li
+          class:list={[
+            'flex flex-col gap-3 px-5 py-7 sm:px-8 lg:py-9',
+            i % 2 === 1 && 'border-l border-hairline',
+            i > 1 && 'border-t border-hairline lg:border-t-0',
+            i > 0 && 'lg:border-l lg:border-hairline',
+          ]}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            class="h-6 w-6 text-gold-light"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            set:html={it.svg}
+          />
+          <h2 class="text-[0.95rem] font-medium text-ink">{it.title}</h2>
+          <p class="text-[0.82rem] leading-relaxed text-ink-dim">{it.desc}</p>
+        </li>
+      ))
+    }
+  </ul>
+</section>

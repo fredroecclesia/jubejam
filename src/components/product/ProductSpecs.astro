@@ -1,0 +1,38 @@
+---
+import { specRows, type Product } from '../../data/products';
+import ProductBenefits from './ProductBenefits.astro';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+const rows = specRows(product);
+---
+
+<section id="spesifikasi" aria-labelledby="spec-title" class="scroll-mt-20 border-t border-hairline bg-black py-10 sm:py-14">
+  <!--
+    Urutan mobile: judul, tabel, keunggulan (supaya judul tidak terpisah dari tabelnya).
+    Desktop: kiri = judul lalu keunggulan, kanan = tabel yang merentang dua baris.
+  -->
+  <div class="mx-auto grid max-w-[1180px] px-5 sm:px-8 lg:grid-cols-[1fr_2fr] lg:gap-x-14">
+    <h2 id="spec-title" class="font-serif text-[1.5rem] font-normal leading-tight text-ink lg:col-start-1 lg:row-start-1">
+      Product specifications
+    </h2>
+
+    <dl class="mt-6 min-w-0 border-b border-hairline lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:mt-0">
+      {
+        rows.map((row) => (
+          <div class="grid grid-cols-[7.5rem_1fr] gap-x-4 border-t border-hairline py-3.5 text-[0.9rem] leading-relaxed sm:grid-cols-[11rem_1fr]">
+            <dt class="text-ink-dim">{row.label}</dt>
+            <dd class="text-ink">{row.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <div class="min-w-0 lg:col-start-1 lg:row-start-2">
+      <ProductBenefits product={product} />
+    </div>
+  </div>
+</section>

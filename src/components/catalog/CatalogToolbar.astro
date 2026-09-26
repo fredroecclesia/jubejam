@@ -1,0 +1,106 @@
+---
+// Baris di atas katalog: jumlah jam di kiri; di kanan tombol "Sembunyikan
+// filter" + dropdown Urutkan (paling kanan). Dropdown Urutkan ada di luar
+// <form> sidebar, tapi tetap ikut terkirim karena memakai atribut
+// form="catalogFilters". Kategori ada di sidebar bersama filter lainnya.
+// State sembunyi/tampil disimpan di data-filters pada #catalogArea (lihat
+// pages/produk/index.astro) dan diingat di localStorage, supaya tidak
+// kembali terbuka tiap kali halaman dimuat ulang oleh filter.
+import { sortOptions, type CatalogFilters } from '../../data/products';
+
+interface Props {
+  filters: CatalogFilters;
+  total: number;
+  shown: number;
+}
+
+const { filters, total, shown } = Astro.props;
+
+const hasActiveFilter = Boolean(
+  filters.brand || filters.kategori || filters.gender || filters.kondisi || filters.harga || filters.urut !== 'terbaru'
+);
+// Filter di sidebar yang sedang aktif (urutan tidak dihitung: dropdown-nya selalu terlihat).
+const hiddenFilterCount = [filters.brand, filters.kategori, filters.gender, filters.kondisi, filters.harga].filter(Boolean).length;
+
+const selectClass =
+  'h-10 w-full rounded-lg border border-hairline bg-bg-panel-2 px-3 text-[0.85rem] text-ink outline-none transition-colors hover:border-gold focus:border-gold';
+---
+
+<div class="mb-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+  <p class="text-[0.85rem] text-ink-dim" role="status" aria-live="polite">
+    {total > 0 ? `Menampilkan ${shown} dari ${total} jam` : 'Tidak ada jam yang cocok'}
+  </p>
+
+  <div class="flex w-full items-center gap-3 sm:w-auto">
+    {
+      hasActiveFilter && (
+        <a
+          href="/produk#daftar-jam"
+          class="hidden whitespace-nowrap text-[0.82rem] text-gold-light underline underline-offset-4 transition-colors hover:text-ink group-data-[filters=hidden]:inline"
+        >
+          Reset filter
+        </a>
+      )
+    }
+
+    <button
+      type="button"
+      id="filterToggle"
+      aria-controls="catalogSidebar"
+      aria-expanded="true"
+      class="inline-flex h-10 flex-shrink-0 items-center gap-2 whitespace-nowrap rounded-lg border border-hairline px-4 text-[0.85rem] text-ink transition-colors hover:border-gold"
+    >
+      <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 7h9M17 7h3M4 17h3M11 17h9"></path>
+        <circle cx="15" cy="7" r="2"></circle>
+        <circle cx="9" cy="17" r="2"></circle>
+      </svg>
+      <span class="group-data-[filters=hidden]:hidden">Sembunyikan filter</span>
+      <span class="hidden group-data-[filters=hidden]:inline">Tampilkan filter</span>
+      {
+        hiddenFilterCount > 0 && (
+          <span class="hidden h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-gold px-1.5 text-[0.7rem] font-semibold text-[#14110A] group-data-[filters=hidden]:inline-flex">
+            {hiddenFilterCount}
+          </span>
+        )
+      }
+    </button>
+
+    <div class="flex min-w-0 flex-1 items-center gap-2 sm:flex-none">
+      <label class="sr-only text-[0.82rem] text-ink-dim sm:not-sr-only sm:whitespace-nowrap" for="f-urut">Urutkan</label>
+      <select id="f-urut" name="urut" form="catalogFilters" class={selectClass + ' sm:w-48'} style="color-scheme: dark">
+        {sortOptions.map((o) => <option value={o.value} selected={filters.urut === o.value}>{o.label}</option>)}
+      </select>
+    </div>
+  </div>
+</div>
+
+<script>
+  const KEY = 'jubejam:catalog-filters';
+  const area = document.getElementById('catalogArea');
+  const toggle = document.getElementById('filterToggle');
+  const form = document.getElementById('catalogFilters') as HTMLFormElement | null;
+
+  function apply(hidden: boolean) {
+    if (!area || !toggle) return;
+    area.dataset.filters = hidden ? 'hidden' : 'shown';
+    toggle.setAttribute('aria-expanded', String(!hidden));
+  }
+
+  // Sinkronkan aria-expanded dengan state awal (di-set inline sebelum render).
+  apply(area?.dataset.filters === 'hidden');
+
+  toggle?.addEventListener('click', () => {
+    const hidden = area?.dataset.filters !== 'hidden';
+    apply(hidden);
+    try {
+      localStorage.setItem(KEY, hidden ? 'hidden' : 'shown');
+    } catch {
+      /* private mode / storage diblokir: abaikan, state tetap jalan untuk sesi ini */
+    }
+  });
+
+  // Dropdown urutkan ada di luar <form>, jadi event change-nya tidak lewat
+  // listener form di CatalogFilters — kirim form secara manual.
+  document.getElementById('f-urut')?.addEventListener('change', () => form?.requestSubmit());
+</script>

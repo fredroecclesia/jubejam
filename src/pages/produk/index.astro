@@ -1,0 +1,121 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/common/Header.astro';
+import Footer from '../../components/common/Footer.astro';
+import CatalogHero from '../../components/catalog/CatalogHero.astro';
+import CatalogFilters from '../../components/catalog/CatalogFilters.astro';
+import CatalogToolbar from '../../components/catalog/CatalogToolbar.astro';
+import ProductCard from '../../components/catalog/ProductCard.astro';
+import { WHATSAPP_URL } from '../../data/faqs';
+import { catalogHref, listBrands, parseFilters, queryProducts } from '../../data/products';
+
+// Halaman ini dirender di server karena filter dibaca dari query string.
+// Nanti, isi listBrands() dan queryProducts() diganti query Drizzle (lihat data/products.ts).
+const filters = parseFilters(Astro.url.searchParams);
+const [brands, { items, total, page, totalPages }] = await Promise.all([listBrands(), queryProducts(filters)]);
+
+const hasActiveFilter = Boolean(filters.brand || filters.kategori || filters.gender || filters.kondisi || filters.harga);
+const pageHref = (n: number) => `${catalogHref({ ...filters, hal: n })}#daftar-jam`;
+---
+
+<Layout
+  title="Katalog Jam Mewah — Jubejam"
+  description="Katalog jam mewah preloved dan brand new bersertifikat: Rolex, Audemars Piguet, dan brand lainnya. Setiap jam diperiksa satu per satu, 100% authentic or moneyback."
+>
+  <Header />
+
+  <main>
+    <CatalogHero />
+
+    <section id="daftar-jam" class="scroll-mt-20 bg-bg py-10 sm:py-14">
+      <div class="mx-auto max-w-[1180px] px-5 sm:px-8">
+        <!--
+          #catalogArea membawa state "filter disembunyikan" (data-filters) yang dibaca
+          lewat varian group-data-[filters=hidden]: di sidebar, toolbar, dan grid produk.
+          Script inline di bawah membaca pilihan terakhir dari localStorage SEBELUM
+          halaman digambar, supaya sidebar tidak berkedip muncul lalu hilang.
+        -->
+        <div id="catalogArea" class="group" data-filters="shown">
+          <script is:inline>
+            try {
+              if (localStorage.getItem('jubejam:catalog-filters') === 'hidden') {
+                document.currentScript.parentElement.dataset.filters = 'hidden';
+              }
+            } catch (e) {}
+          </script>
+
+          <CatalogToolbar filters={filters} total={total} shown={items.length} />
+
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-[260px_1fr] group-data-[filters=hidden]:lg:grid-cols-1">
+          <CatalogFilters filters={filters} brands={brands} />
+
+          <div>
+            {
+              items.length > 0 ? (
+                <ul class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 min-[1180px]:grid-cols-4 group-data-[filters=hidden]:lg:grid-cols-4 group-data-[filters=hidden]:min-[1180px]:grid-cols-5">
+                  {items.map((product) => (
+                    <li>
+                      <ProductCard product={product} />
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div class="rounded-xl border border-hairline bg-bg-panel px-6 py-14 text-center">
+                  <h2 class="font-serif text-[1.5rem] font-normal text-ink">Belum ada jam untuk pilihan ini</h2>
+                  <p class="mx-auto mt-3 max-w-[46ch] text-[0.95rem] leading-relaxed text-ink-dim">
+                    Stok kami berubah setiap hari. Coba longgarkan filter, atau tanya admin untuk jam yang kamu cari.
+                  </p>
+                  <div class="mt-7 flex flex-wrap justify-center gap-3">
+                    {hasActiveFilter && (
+                      <a
+                        href="/produk#daftar-jam"
+                        class="rounded-full border border-ink/35 px-6 py-2.5 text-[0.85rem] text-ink transition-colors hover:border-ink-dim"
+                      >
+                        Reset filter
+                      </a>
+                    )}
+                    <a
+                      href={WHATSAPP_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="rounded-full bg-gold px-6 py-2.5 text-[0.85rem] font-semibold text-[#14110A] transition-colors hover:bg-gold-light"
+                    >
+                      Tanya admin
+                    </a>
+                  </div>
+                </div>
+              )
+            }
+
+            {
+              totalPages > 1 && (
+                <nav aria-label="Halaman katalog" class="mt-12 flex items-center justify-center gap-5 text-[0.85rem]">
+                  {page > 1 ? (
+                    <a href={pageHref(page - 1)} rel="prev" class="text-gold-light underline underline-offset-4 hover:text-ink">
+                      Sebelumnya
+                    </a>
+                  ) : (
+                    <span class="text-ink-dim/50">Sebelumnya</span>
+                  )}
+                  <span class="text-ink-dim">
+                    Halaman {page} dari {totalPages}
+                  </span>
+                  {page < totalPages ? (
+                    <a href={pageHref(page + 1)} rel="next" class="text-gold-light underline underline-offset-4 hover:text-ink">
+                      Berikutnya
+                    </a>
+                  ) : (
+                    <span class="text-ink-dim/50">Berikutnya</span>
+                  )}
+                </nav>
+              )
+            }
+          </div>
+        </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

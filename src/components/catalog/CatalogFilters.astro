@@ -1,0 +1,120 @@
+---
+// Filter katalog — sidebar kiri di /produk (lihat pages/produk/index.astro).
+// Semua state ada di query string (bisa dibagikan, ramah SEO), diproses di
+// server oleh halaman /produk.
+//   - Brand, kategori, gender, rentang harga, kondisi: semuanya dropdown dalam
+//     satu <form method="get">. Script kecil mengirim form saat pilihan berubah;
+//     tanpa JS, tombol "Terapkan" muncul.
+//   - "Urutkan" TIDAK ada di sini: dropdown-nya ada di CatalogToolbar (kanan atas
+//     katalog) dan tetap ikut terkirim lewat atribut form="catalogFilters".
+//   - Sidebar ini bisa disembunyikan lewat tombol di CatalogToolbar
+//     (group-data-[filters=hidden]:hidden, state ada di #catalogArea).
+import {
+  conditionOptions,
+  categoryOptions,
+  genderOptions,
+  priceOptions,
+  type BrandOption,
+  type CatalogFilters,
+} from '../../data/products';
+
+interface Props {
+  filters: CatalogFilters;
+  brands: BrandOption[];
+}
+
+const { filters, brands } = Astro.props;
+
+const hasActiveFilter = Boolean(
+  filters.brand || filters.kategori || filters.gender || filters.kondisi || filters.harga || filters.urut !== 'terbaru'
+);
+
+const selectClass =
+  'h-10 w-full rounded-lg border border-hairline bg-bg-panel-2 px-3 text-[0.85rem] text-ink outline-none transition-colors hover:border-gold focus:border-gold';
+---
+
+<aside
+  id="catalogSidebar"
+  aria-label="Filter katalog"
+  class="lg:sticky lg:top-6 lg:self-start group-data-[filters=hidden]:hidden"
+>
+  <div class="rounded-xl border border-hairline bg-bg-panel p-5">
+    <h2 class="mb-4 font-mono text-[0.78rem] font-medium tracking-[1.5px] text-ink-dim">FILTER</h2>
+
+    <form id="catalogFilters" method="get" action="/produk#daftar-jam" class="flex flex-col gap-4">
+      <div>
+        <label class="mb-1.5 block text-[0.78rem] text-ink-dim" for="f-brand">Brand</label>
+        <select id="f-brand" name="brand" class={selectClass} style="color-scheme: dark">
+          <option value="">Semua brand</option>
+          {brands.map((b) => <option value={b.slug} selected={filters.brand === b.slug}>{b.name}</option>)}
+        </select>
+      </div>
+
+      <div>
+        <label class="mb-1.5 block text-[0.78rem] text-ink-dim" for="f-kategori">Kategori</label>
+        <select id="f-kategori" name="kategori" class={selectClass} style="color-scheme: dark">
+          <option value="">Semua kategori</option>
+          {categoryOptions.map((o) => <option value={o.slug} selected={filters.kategori === o.slug}>{o.label}</option>)}
+        </select>
+      </div>
+
+      <div>
+        <label class="mb-1.5 block text-[0.78rem] text-ink-dim" for="f-gender">Gender</label>
+        <select id="f-gender" name="gender" class={selectClass} style="color-scheme: dark">
+          <option value="">Semua gender</option>
+          {genderOptions.map((o) => <option value={o.value} selected={filters.gender === o.value}>{o.label}</option>)}
+        </select>
+      </div>
+
+      <div>
+        <label class="mb-1.5 block text-[0.78rem] text-ink-dim" for="f-harga">Rentang harga</label>
+        <select id="f-harga" name="harga" class={selectClass} style="color-scheme: dark">
+          <option value="">Semua harga</option>
+          {priceOptions.map((o) => <option value={o.value} selected={filters.harga === o.value}>{o.label}</option>)}
+        </select>
+      </div>
+
+      <div>
+        <label class="mb-1.5 block text-[0.78rem] text-ink-dim" for="f-kondisi">Kondisi</label>
+        <select id="f-kondisi" name="kondisi" class={selectClass} style="color-scheme: dark">
+          <option value="">Semua kondisi</option>
+          {conditionOptions.map((o) => <option value={o.value} selected={filters.kondisi === o.value}>{o.label}</option>)}
+        </select>
+      </div>
+
+      <noscript>
+        <button type="submit" class="h-10 rounded-lg bg-gold px-4 text-[0.85rem] font-semibold text-[#14110A]">
+          Terapkan
+        </button>
+      </noscript>
+
+      {
+        hasActiveFilter && (
+          <a
+            href="/produk#daftar-jam"
+            class="text-center text-[0.82rem] text-gold-light underline underline-offset-4 transition-colors hover:text-ink"
+          >
+            Reset filter
+          </a>
+        )
+      }
+    </form>
+  </div>
+</aside>
+
+<script>
+  const form = document.getElementById('catalogFilters') as HTMLFormElement | null;
+
+  if (form) {
+    // Kirim otomatis saat dropdown berubah.
+    form.addEventListener('change', () => form.requestSubmit());
+
+    // Buang field kosong dan urutan default supaya URL tetap bersih.
+    form.addEventListener('formdata', (event) => {
+      const data = (event as FormDataEvent).formData;
+      for (const [key, value] of Array.from(data.entries())) {
+        if (value === '' || (key === 'urut' && value === 'terbaru')) data.delete(key);
+      }
+    });
+  }
+</script>

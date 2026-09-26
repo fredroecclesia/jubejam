@@ -1,0 +1,28 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/common/Header.astro';
+import Footer from '../components/common/Footer.astro';
+import FaqHero from '../components/faq/FaqHero.astro';
+import CompanyPolicies from '../components/faq/CompanyPolicies.astro';
+import FaqAccordion from '../components/faq/FaqAccordion.astro';
+---
+
+<Layout
+  title="FAQ's — Jubejam"
+  description="Pertanyaan yang sering diajukan seputar pembelian, harga, keaslian, pengiriman, pembayaran, cicilan, dan garansi jam tangan mewah di Jubejam."
+>
+  <Header />
+
+  <main>
+    <FaqHero />
+
+    <section class="bg-bg-panel-2 py-14 sm:py-20">
+      <div class="mx-auto grid max-w-[1180px] grid-cols-1 gap-12 px-5 sm:px-8 lg:grid-cols-[1fr_2.6fr] lg:gap-16">
+        <CompanyPolicies />
+        <FaqAccordion />
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

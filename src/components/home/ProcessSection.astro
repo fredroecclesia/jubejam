@@ -1,0 +1,87 @@
+---
+// Menjelaskan janji di teks penutup hero ("Setiap komponen, diperiksa satu per satu"),
+// jadi judul di sini TIDAK boleh mengulang kalimat itu. Poin-poinnya
+// mengikuti field yang memang ada di tiap jam (movement, case, dial, bracelet,
+// grade, kelengkapan, warranty) dan klaim quality check 10x di AUTHENTICITY_NOTE.
+// Sesuaikan kalau proses sebenarnya di toko berbeda.
+// `icon` = path SVG (viewBox 24, stroke) untuk ikon di dalam lingkaran emas.
+const steps = [
+  {
+    title: 'Keaslian',
+    desc: 'Movement, case, dial, dan bracelet dicek satu per satu terhadap spesifikasi referensinya.',
+    icon: 'M12 3l7 3v5.5c0 4.2-3 7.5-7 9.5-4-2-7-5.3-7-9.5V6l7-3zm-3 9l2.2 2.2L15.2 9.5',
+  },
+  {
+    title: 'Kondisi',
+    desc: 'Grade kondisi fisik dicatat apa adanya, dari unworn sampai very good.',
+    icon: 'M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2zM15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z',
+  },
+  {
+    title: 'Kelengkapan',
+    desc: 'Box, papers, dan garansi dicantumkan jelas di setiap jam, seperti "Full set" atau "Box dan papers".',
+    icon: 'M12 3l8 4.2v9.6L12 21l-8-4.2V7.2L12 3zm0 9l8-4.8M12 12L4 7.2M12 12v9',
+  },
+  {
+    title: 'Quality check berlapis',
+    desc: 'Lebih dari 10 kali pemeriksaan oleh tim Jubejam sebelum jam sampai ke tangan Anda.',
+    icon: 'M20 12a8 8 0 11-4.7-7.3M8.5 12l2.5 2.5 5.5-6',
+  },
+];
+---
+<section id="proses" aria-labelledby="process-title" class="bg-bg py-16 sm:py-24">
+  <div class="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-[6vw]">
+    <div class="mb-9 sm:mb-11">
+      <div class="mb-4 flex items-center gap-5">
+        <p class="eyebrow">Proses kami</p>
+        <span class="hidden h-px w-24 bg-gold sm:block" aria-hidden="true"></span>
+      </div>
+      <h2 id="process-title" class="font-serif text-[clamp(1.75rem,3.3vw,2.9rem)] font-semibold leading-[1.08] tracking-[-0.01em] text-ink">
+        <span class="block">Empat lapis pemeriksaan,</span>
+        <em class="block font-semibold italic text-gold-light">sebelum sampai ke tangan</em>
+        <span class="block">Anda.</span>
+      </h2>
+      <p class="mt-4 max-w-[52ch] text-[0.95rem] leading-relaxed text-ink/80">
+        Inilah yang dimaksud "diperiksa satu per satu": empat hal yang kami cek pada setiap jam.
+      </p>
+
+      <!-- Mengarah ke video di bawahnya (bukan keluar halaman), supaya alurnya lanjut ke section berikutnya. -->
+      <a href="#video" class="btn-play mt-6 inline-flex items-center gap-4 rounded-full py-1.5 pl-6 pr-1.5 text-[0.9rem] font-medium text-[#14110A]">
+        Tonton video kami
+        <span class="flex h-9 w-9 items-center justify-center rounded-full bg-[#14110A]" aria-hidden="true">
+          <svg viewBox="0 0 24 24" class="ml-0.5 h-3.5 w-3.5 text-gold-light" fill="currentColor"><path d="M7 4.500v15l13-7.500z" /></svg>
+        </span>
+      </a>
+    </div>
+
+    <ol class="grid grid-cols-1 gap-y-9 sm:grid-cols-2 lg:grid-cols-4 lg:gap-y-0">
+      {
+        steps.map((s, i) => (
+          <li class:list={['lg:px-8 lg:first:pl-0 lg:last:pr-0', i > 0 && 'lg:border-l lg:border-hairline']}>
+            <div class="flex items-center gap-4">
+              <span class="text-[0.9rem] tracking-[0.08em] text-gold-light">{String(i + 1).padStart(2, '0')}</span>
+              <span class="h-px flex-1 bg-gold/70" aria-hidden="true" />
+            </div>
+            <span class="mt-5 flex h-[60px] w-[60px] items-center justify-center rounded-full border border-gold" aria-hidden="true">
+              <svg viewBox="0 0 24 24" class="h-7 w-7 text-gold-light" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+                <path d={s.icon} />
+              </svg>
+            </span>
+            <h3 class="mt-5 font-serif text-[1.25rem] font-medium leading-snug text-ink">{s.title}</h3>
+            <p class="mt-2.5 max-w-[34ch] text-[0.88rem] leading-relaxed text-ink/75">{s.desc}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .btn-play {
+    background-image: linear-gradient(100deg, #e9c98f, #d2a265);
+    transition: filter 0.2s ease, transform 0.2s ease;
+  }
+  .btn-play:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+  }
+</style>

@@ -1,0 +1,19 @@
+---
+import AdminLayout from '../../../../layouts/AdminLayout.astro';
+import EventForm from '../../../../components/admin/EventForm.jsx';
+import { getEventByIdAdmin } from '../../../../data/events';
+
+export const prerender = false;
+
+const { id } = Astro.params;
+const event = id ? await getEventByIdAdmin(id) : undefined;
+
+if (!event) {
+  return Astro.redirect('/admin/events');
+}
+---
+
+<AdminLayout title={`Edit — ${event.title}`} active="events">
+  <h1 class="font-serif text-2xl text-ink mb-6">Edit Event</h1>
+  <EventForm client:load initialEvent={event} eventId={event.id} />
+</AdminLayout>

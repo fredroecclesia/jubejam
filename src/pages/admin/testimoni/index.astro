@@ -1,0 +1,88 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { listAllTestimonialsAdmin } from '../../../data/testimonials';
+
+export const prerender = false;
+
+const testimonials = await listAllTestimonialsAdmin();
+---
+
+<AdminLayout title="Testimoni" active="testimoni">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="font-serif text-2xl text-ink">Testimoni</h1>
+      <p class="text-sm text-ink-dim">{testimonials.length} testimoni total. Diurutkan sesuai "Urutan tampil".</p>
+    </div>
+    <a href="/admin/testimoni/baru" class="rounded bg-gold text-[#14110A] font-medium px-4 py-2 text-sm hover:bg-gold-light transition-colors">
+      + Tambah Testimoni
+    </a>
+  </div>
+
+  {testimonials.length === 0 ? (
+    <p class="text-ink-dim border border-dashed border-hairline rounded-lg px-6 py-12 text-center">
+      Belum ada testimoni. Klik "Tambah Testimoni" untuk mulai isi section Testimonial di homepage.
+    </p>
+  ) : (
+    <div class="border border-hairline rounded-lg overflow-hidden">
+      <table class="w-full text-sm">
+        <thead class="bg-bg-panel-2 text-ink-dim text-left">
+          <tr>
+            <th class="px-4 py-3 font-normal">Urutan</th>
+            <th class="px-4 py-3 font-normal">Foto</th>
+            <th class="px-4 py-3 font-normal">Nama</th>
+            <th class="px-4 py-3 font-normal">Jam dibeli</th>
+            <th class="px-4 py-3 font-normal">Kutipan</th>
+            <th class="px-4 py-3 font-normal"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {testimonials.map((t) => (
+            <tr class="border-t border-hairline">
+              <td class="px-4 py-3 text-ink-dim font-mono text-xs">{t.sortOrder}</td>
+              <td class="px-4 py-3">
+                <img src={t.image} alt={t.imageAlt} class="w-16 aspect-[16/10] object-cover rounded" />
+              </td>
+              <td class="px-4 py-3 text-ink">
+                {t.name}
+                {t.role && <span class="block text-xs text-ink-dim">{t.role}</span>}
+              </td>
+              <td class="px-4 py-3 text-ink-dim max-w-[24ch] truncate">
+                {t.product ? `${t.product.brandName} ${t.product.model}` : '—'}
+              </td>
+              <td class="px-4 py-3 text-ink-dim max-w-[32ch] truncate">{t.quote}</td>
+              <td class="px-4 py-3 text-right space-x-3 whitespace-nowrap">
+                <a href={`/admin/testimoni/${t.id}/edit`} class="text-gold-light hover:underline">Edit</a>
+                <button
+                  type="button"
+                  class="text-[#F09595] hover:underline js-delete-testimoni"
+                  data-id={t.id}
+                  data-nama={t.name}
+                >
+                  Hapus
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+</AdminLayout>
+
+<script>
+  document.querySelectorAll('.js-delete-testimoni').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const id = btn.getAttribute('data-id');
+      const nama = btn.getAttribute('data-nama');
+      if (!confirm(`Hapus testimoni "${nama}"? Tindakan ini tidak bisa dibatalkan.`)) return;
+
+      const res = await fetch(`/api/admin/testimoni/${id}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error ?? 'Gagal menghapus testimoni.');
+        return;
+      }
+      window.location.reload();
+    });
+  });
+</script>

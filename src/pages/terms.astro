@@ -1,0 +1,102 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro';
+
+// Isi halaman Terms and Conditions. Untuk Privacy Policy / Return Policy,
+// salin file ini, ganti teksnya, dan pakai LegalLayout yang sama.
+
+const intro: string[] = [
+  'Harap baca Syarat dan Ketentuan ini (“Syarat”, “Syarat dan Ketentuan”) dengan seksama sebelum menggunakan aplikasi JubeJam App (“Layanan”) yang dioperasikan oleh JubeJam (“kami”, “kita”, atau “milik kami”).',
+  'Akses dan penggunaan Layanan Anda bergantung pada penerimaan dan kepatuhan Anda terhadap Syarat ini. Syarat ini berlaku untuk semua pengunjung, pengguna, dan orang lain yang mengakses atau menggunakan Layanan.',
+  'Dengan mengakses atau menggunakan Layanan Anda setuju untuk terikat oleh Syarat ini. Jika Anda tidak setuju dengan bagian manapun dari syarat maka Anda tidak dapat mengakses Layanan.',
+];
+
+interface Clause {
+  title: string;
+  paragraphs: string[];
+}
+
+const clauses: Clause[] = [
+  {
+    title: 'Akun',
+    paragraphs: [
+      'Saat Anda membuat akun dengan kami, Anda harus memberikan kami informasi yang akurat, lengkap, dan terkini setiap saat. Kegagalan untuk melakukannya merupakan pelanggaran terhadap Syarat, yang dapat mengakibatkan penghentian segera akun Anda di Layanan kami.',
+      'Anda bertanggung jawab untuk menjaga kata sandi yang Anda gunakan untuk mengakses Layanan dan untuk segala aktivitas atau tindakan di bawah kata sandi Anda, apakah kata sandi Anda ada di Layanan kami atau layanan pihak ketiga.',
+      'Anda setuju untuk tidak mengungkapkan kata sandi Anda kepada pihak ketiga mana pun. Anda harus memberi tahu kami segera setelah mengetahui adanya pelanggaran keamanan atau penggunaan akun Anda tanpa izin.',
+    ],
+  },
+  {
+    title: 'Kekayaan Intelektual',
+    paragraphs: [
+      'Layanan dan konten, fitur dan fungsionalitas aslinya adalah dan akan tetap menjadi milik eksklusif JubeJam dan pemberi lisensinya. Layanan dilindungi oleh hak cipta, merek dagang, dan undang-undang lainnya baik dari Indonesia maupun negara asing. Merek dagang dan pakaian dagang kami tidak boleh digunakan sehubungan dengan produk atau layanan apa pun tanpa persetujuan tertulis sebelumnya dari JubeJam.',
+    ],
+  },
+  {
+    title: 'Tautan ke Situs Web Lain',
+    paragraphs: [
+      'Layanan kami mungkin berisi tautan ke situs web atau layanan pihak ketiga yang tidak dimiliki atau dikendalikan oleh JubeJam.',
+      'JubeJam tidak memiliki kendali atas, dan tidak bertanggung jawab atas, konten, kebijakan privasi, atau praktik situs web atau layanan pihak ketiga mana pun. Anda selanjutnya mengakui dan setuju bahwa JubeJam tidak akan bertanggung jawab atau berkewajiban, secara langsung atau tidak langsung, atas kerusakan atau kerugian yang disebabkan atau diduga disebabkan oleh atau sehubungan dengan penggunaan atau ketergantungan pada konten, barang, atau layanan yang tersedia di atau melalui situs web atau layanan tersebut.',
+      'Kami sangat menyarankan Anda untuk membaca syarat dan ketentuan serta kebijakan privasi dari situs web atau layanan pihak ketiga yang Anda kunjungi.',
+    ],
+  },
+  {
+    title: 'Penghentian',
+    paragraphs: [
+      'Kami dapat menghentikan atau menangguhkan akses ke Layanan kami segera, tanpa pemberitahuan sebelumnya atau kewajiban, untuk alasan apapun, termasuk tanpa batasan jika Anda melanggar Syarat.',
+      'Setelah penghentian, hak Anda untuk menggunakan Layanan akan segera dihentikan. Jika Anda ingin mengakhiri akun Anda, Anda dapat berhenti menggunakan Layanan.',
+      'Semua ketentuan dari Syarat yang berdasarkan sifatnya harus tetap berlaku setelah penghentian, termasuk, tanpa batasan, ketentuan kepemilikan, penafian jaminan, ganti rugi, dan batasan tanggung jawab.',
+    ],
+  },
+  {
+    title: 'Penafian',
+    paragraphs: [
+      'Penggunaan Layanan oleh Anda adalah risiko Anda sendiri. Layanan disediakan atas dasar “SEBAGAIMANA ADANYA” dan “SEBAGAIMANA TERSEDIA”. Layanan disediakan tanpa jaminan apapun, baik tersurat maupun tersirat, termasuk, tetapi tidak terbatas pada, jaminan tersirat tentang kelayakan untuk diperdagangkan, kesesuaian untuk tujuan tertentu, tidak adanya pelanggaran atau pelaksanaan jalannya.',
+    ],
+  },
+  {
+    title: 'Hukum yang Mengatur',
+    paragraphs: [
+      'Syarat ini akan diatur dan ditafsirkan sesuai dengan hukum Indonesia, tanpa memperhatikan pertentangan ketentuan hukumnya.',
+      'Kegagalan kami untuk menegakkan hak atau ketentuan dari Syarat ini tidak akan dianggap sebagai pengabaian hak tersebut. Jika ada ketentuan dari Syarat ini yang dianggap tidak sah atau tidak dapat dilaksanakan oleh pengadilan, ketentuan lainnya dari Syarat ini akan tetap berlaku. Syarat ini merupakan keseluruhan perjanjian antara kami mengenai Layanan kami, dan menggantikan serta menggugurkan perjanjian sebelumnya yang mungkin ada antara kami mengenai Layanan.',
+    ],
+  },
+  {
+    title: 'Perubahan',
+    paragraphs: [
+      'Kami berhak, atas kebijakan kami sendiri, untuk memodifikasi atau mengganti Syarat ini kapan saja. Jika revisi adalah materi, kami akan berusaha untuk memberikan pemberitahuan setidaknya 30 hari sebelum persyaratan baru berlaku. Apa yang merupakan perubahan materi akan ditentukan atas kebijakan kami sendiri.',
+      'Dengan terus mengakses atau menggunakan Layanan kami setelah revisi tersebut berlaku, Anda setuju untuk terikat oleh syarat yang telah direvisi. Jika Anda tidak setuju dengan syarat baru, mohon berhenti menggunakan Layanan.',
+    ],
+  },
+];
+---
+
+<LegalLayout
+  heading="Terms and Conditions"
+  description="Syarat dan Ketentuan penggunaan aplikasi JubeJam App yang dioperasikan oleh JubeJam."
+  updatedAt="21 Oktober 2024"
+  updatedIso="2024-10-21"
+>
+  {intro.map((p) => <p>{p}</p>)}
+
+  {
+    clauses.map((c) => (
+      <section>
+        <h2>{c.title}</h2>
+        {c.paragraphs.map((p) => (
+          <p>{p}</p>
+        ))}
+      </section>
+    ))
+  }
+
+  <section>
+    <h2>Hubungi Kami</h2>
+    <p>Jika Anda memiliki pertanyaan tentang Syarat ini, silakan hubungi kami:</p>
+    <ul>
+      <li>Dengan email: <a href="mailto:admin@jubejam.com">admin@jubejam.com</a></li>
+      <li>
+        Dengan mengunjungi halaman kontak kami di situs web:
+        <a href="https://jubejam.com/" target="_blank" rel="noopener noreferrer">https://jubejam.com/</a>
+      </li>
+    </ul>
+  </section>
+</LegalLayout>

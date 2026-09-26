@@ -1,0 +1,11 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import UpdateForm from '../../../components/admin/UpdateForm.jsx';
+
+export const prerender = false;
+---
+
+<AdminLayout title="Tambah Update" active="updates">
+  <h1 class="font-serif text-2xl text-ink mb-6">Tambah Update</h1>
+  <UpdateForm client:load />
+</AdminLayout>

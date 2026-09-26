@@ -1,0 +1,286 @@
+---
+import { STORE_ADDRESS, STORE_NAME, MAP_LINK_URL } from '../../data/contact';
+import { WHATSAPP_URL } from '../../data/faqs';
+
+const trustPoints = [
+  {
+    title: '100% Original',
+    desc: 'Jaminan keaslian produk',
+    svg: '<path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/>',
+  },
+  {
+    title: 'Pilihan Terlengkap',
+    desc: 'Berbagai brand ternama',
+    svg: '<path d="M6 3h12l4 6-10 12L2 9l4-6z"/><path d="M2 9h20M8 9l4 12 4-12M10 3L8 9M14 3l2 6"/>',
+  },
+  {
+    title: 'Pengiriman Aman',
+    desc: 'Seluruh Indonesia',
+    svg: '<path d="M2 6h11v10H2z"/><path d="M13 9h4l3 3v4h-7"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="16.5" cy="17.5" r="1.8"/>',
+  },
+  {
+    title: 'Layanan Profesional',
+    desc: 'Tim ahli dan terpercaya',
+    svg: '<path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/><path d="M19 19c0 1.8-2 3-5 3h-2"/>',
+  },
+];
+---
+<!--
+  Foto toko: /public/store/store-photo.webp masih hasil crop dari gambar desain (745×545).
+  Timpa dengan foto asli toko (rasio ±1.37:1, lebar min. 1500px) supaya tajam di layar besar.
+-->
+<section id="offline-store" aria-labelledby="store-title" class="store">
+  <!-- garis emas diagonal di pojok, seperti di desain -->
+  <svg class="store-line store-line--tl" viewBox="0 0 125 240" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="store-line-tl" x1="1" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#e9c98f" stop-opacity="0.95" />
+        <stop offset="1" stop-color="#c9a46b" stop-opacity="0.15" />
+      </linearGradient>
+    </defs>
+    <line x1="125" y1="0" x2="0" y2="240" stroke="url(#store-line-tl)" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+  </svg>
+  <svg class="store-line store-line--br" viewBox="0 0 150 271" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="store-line-br" x1="1" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#c9a46b" stop-opacity="0.2" />
+        <stop offset="1" stop-color="#e9c98f" stop-opacity="0.95" />
+      </linearGradient>
+    </defs>
+    <line x1="150" y1="0" x2="0" y2="271" stroke="url(#store-line-br)" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+  </svg>
+
+  <div class="store-grid">
+    <div class="store-copy">
+      <div class="flex items-center gap-4">
+        <p class="eyebrow store-eyebrow whitespace-nowrap">Toko offline</p>
+        <span class="store-eyebrow-line"></span>
+      </div>
+
+      <h2 id="store-title" class="store-title mt-5">
+        Kunjungi
+        <em class="block italic text-gold-light">{STORE_NAME}</em>
+      </h2>
+
+      <p class="store-lead mt-6">
+        Lihat dan rasakan langsung koleksi jam mewah kami di store Jubejam. Dapatkan pengalaman terbaik bersama tim profesional kami.
+      </p>
+
+      <p class="store-address mt-6 flex items-center gap-3">
+        <svg viewBox="0 0 24 24" class="h-6 w-6 shrink-0 text-gold-light" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/>
+          <circle cx="12" cy="10" r="2.5"/>
+        </svg>
+        <span>{STORE_ADDRESS}</span>
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a href={MAP_LINK_URL} target="_blank" rel="noopener noreferrer" class="btn btn-gold store-btn gap-3">
+          Lihat Lokasi
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6"/>
+          </svg>
+        </a>
+        <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" class="btn btn-outline store-btn gap-3">
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 21c4.97 0 9-3.8 9-8.5S16.97 4 12 4s-9 3.8-9 8.5c0 1.6.47 3.1 1.29 4.38L3 21l4.4-1.24C8.63 20.55 10.26 21 12 21z"/>
+            <path d="M9.2 8.8c-.3.5-.2 1.4.6 2.6.9 1.3 1.9 2.1 3 2.4.7.2 1.3-.1 1.5-.6l-1.2-.9-.6.4c-.6-.3-1.3-1-1.6-1.6l.4-.6-.9-1.2c-.4 0-.9.2-1.2.5z"/>
+          </svg>
+          Hubungi Kami
+        </a>
+      </div>
+    </div>
+
+    <figure class="store-photo">
+      <img
+        src="/store/store-photo.webp"
+        alt={`Interior ${STORE_NAME}`}
+        width="745"
+        height="545"
+        loading="lazy"
+        decoding="async"
+      />
+    </figure>
+
+    <ul class="store-trust">
+      {
+        trustPoints.map((t) => (
+          <li class="store-trust-item flex items-center gap-3">
+            <svg viewBox="0 0 24 24" class="h-7 w-7 shrink-0 text-gold-light" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={t.svg} />
+            <div>
+              <p class="text-[0.88rem] font-medium text-ink">{t.title}</p>
+              <p class="mt-0.5 text-[0.76rem] text-ink-dim">{t.desc}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  /* Semua ukuran/tata letak ditulis lewat <style> biasa (bukan class Tailwind arbitrary)
+     supaya tidak bergantung pada scan Tailwind. Proporsi mengikuti desain 1870×841. */
+  .store {
+    position: relative;
+    overflow: hidden;
+    /* jarak dari section Sell di atas & Event/Update di bawah (celah hitam = warna body) */
+    margin-block: clamp(2.5rem, 6vw, 6rem);
+    background:
+      radial-gradient(ellipse 60% 70% at 78% 40%, rgba(74, 56, 30, 0.28), transparent 70%),
+      linear-gradient(135deg, #0d0b09 0%, #080706 55%, #050403 100%);
+  }
+  .store-line {
+    display: none;
+    position: absolute;
+    pointer-events: none;
+    filter: drop-shadow(0 0 6px rgba(233, 201, 143, 0.35));
+  }
+
+  .store-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 2.5rem;
+    padding: 4rem 1.25rem 3.5rem;
+  }
+
+  .store-eyebrow {
+    letter-spacing: 0.32em;
+  }
+  .store-eyebrow-line {
+    display: block;
+    height: 1px;
+    width: 5rem;
+    background: rgba(201, 164, 107, 0.7);
+  }
+  .store-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    line-height: 1.02;
+    color: #f4f1ea;
+    font-size: clamp(2.75rem, 11vw, 4rem);
+  }
+  .store-title em {
+    font-weight: 500;
+  }
+  .store-lead {
+    max-width: 36ch;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: #d6d3cb;
+  }
+  .store-address {
+    font-size: 1rem;
+    color: #e7e4dc;
+  }
+  .store-btn {
+    padding: 1rem 2rem;
+    font-size: 0.95rem;
+  }
+
+  .store-photo {
+    margin: 0;
+    overflow: hidden;
+    border-radius: 18px;
+    border: 1.5px solid rgba(201, 164, 107, 0.85);
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.6),
+      0 24px 60px rgba(0, 0, 0, 0.6),
+      0 0 36px rgba(201, 164, 107, 0.12);
+    aspect-ratio: 745 / 545;
+    background: #14110d;
+  }
+  .store-photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .store-trust {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .store-grid {
+      padding: 5rem 2rem 4rem;
+    }
+    .store-trust {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25rem 0;
+    }
+    .store-trust-item {
+      padding: 0 1.5rem;
+    }
+    .store-trust-item:first-child {
+      padding-left: 0;
+    }
+    .store-trust-item:not(:first-child) {
+      border-left: 1px solid rgba(255, 255, 255, 0.14);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .store-line {
+      display: block;
+    }
+    .store-line--tl {
+      top: 0;
+      left: 0;
+      width: 6.7vw;
+      height: 12.8vw;
+    }
+    .store-line--br {
+      right: 0;
+      bottom: 0;
+      width: 8vw;
+      height: 14.5vw;
+    }
+
+    /* kolom: teks | foto (40,16vw) — foto mulai di ±54% lebar, berakhir ±94% */
+    .store-grid {
+      grid-template-columns: minmax(0, 1fr) 40.16vw;
+      column-gap: 2rem;
+      row-gap: clamp(1.25rem, 2vw, 2.5rem);
+      align-items: center;
+      padding-top: clamp(3.5rem, 5.9vw, 7rem);
+      padding-bottom: clamp(3rem, 5.6vw, 6.5rem);
+      padding-left: clamp(3rem, 6.1vw, 8rem);
+      padding-right: clamp(2rem, 5.8vw, 7.5rem);
+    }
+    .store-photo {
+      border-radius: clamp(16px, 1.2vw, 26px);
+    }
+    .store-trust {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      align-self: start;
+      margin-left: -0.3vw;
+    }
+    .store-eyebrow {
+      font-size: clamp(0.8rem, 1.1vw, 1.2rem);
+    }
+    .store-eyebrow-line {
+      width: 13vw;
+      max-width: 15rem;
+    }
+    .store-title {
+      font-size: clamp(3.25rem, 4.5vw, 5.4rem);
+    }
+    .store-lead {
+      max-width: 34ch;
+      font-size: clamp(1.05rem, 1.25vw, 1.4rem);
+    }
+    .store-address {
+      font-size: clamp(1rem, 1.12vw, 1.25rem);
+    }
+    .store-btn {
+      padding: clamp(1rem, 1.4vw, 1.5rem) clamp(2rem, 2.6vw, 3rem);
+      font-size: clamp(0.95rem, 1.1vw, 1.2rem);
+    }
+  }
+</style>

@@ -1,0 +1,159 @@
+---
+// Formulir "Kirim pesan". Sama seperti Sell My Watch: data tidak disimpan ke database,
+// tapi disusun jadi pesan dan diteruskan ke WhatsApp admin (wa.me).
+// Kalau nanti ada endpoint email/CRUD, ganti isi handler submit di <script> bawah.
+import { WHATSAPP_URL } from '../../data/faqs';
+
+const fields = [
+  { id: 'firstName', label: 'Nama depan', type: 'text', autocomplete: 'given-name', placeholder: 'Budi', error: 'Isi nama depan.' },
+  { id: 'lastName', label: 'Nama belakang', type: 'text', autocomplete: 'family-name', placeholder: 'Santoso', error: 'Isi nama belakang.' },
+  { id: 'email', label: 'Email', type: 'email', autocomplete: 'email', placeholder: 'nama@email.com', error: 'Isi email dengan format nama@email.com.' },
+  { id: 'phone', label: 'Nomor telepon', type: 'tel', autocomplete: 'tel', placeholder: '0812xxxxxxxx', error: 'Isi nomor telepon, minimal 8 angka.' },
+];
+
+const inputClass =
+  'contact-input w-full rounded-md border border-hairline bg-black/40 px-4 py-3 text-[0.95rem] text-ink outline-none transition-colors placeholder:text-ink-dim/60 focus:border-gold focus:ring-1 focus:ring-gold';
+---
+
+<div>
+  <h2 class="font-serif text-[clamp(1.6rem,3vw,2.2rem)] font-normal leading-tight text-ink">Kirim pesan</h2>
+  <p class="mt-2 max-w-[46ch] text-[0.95rem] leading-relaxed text-ink-dim">
+    Setelah menekan <span class="text-ink">Kirim via WhatsApp</span>, chat admin kami terbuka dengan pesanmu sudah terisi.
+  </p>
+
+  <form id="contactForm" class="mt-7 grid gap-x-5 gap-y-5 sm:grid-cols-2" data-whatsapp={WHATSAPP_URL} novalidate>
+    {
+      fields.map((f) => (
+        <div>
+          <label for={f.id} class="text-[0.85rem] text-ink">
+            {f.label} <span aria-hidden="true" class="text-gold-light">*</span>
+          </label>
+          <input
+            id={f.id}
+            name={f.id}
+            type={f.type}
+            autocomplete={f.autocomplete}
+            placeholder={f.placeholder}
+            required
+            data-error={f.error}
+            class={`${inputClass} mt-2`}
+          />
+          <p id={`${f.id}-error`} class="mt-1.5 hidden text-[0.8rem] text-red-400" role="alert"></p>
+        </div>
+      ))
+    }
+
+    <div class="sm:col-span-2">
+      <label for="message" class="text-[0.85rem] text-ink">Pesan</label>
+      <textarea
+        id="message"
+        name="message"
+        rows="5"
+        placeholder="Tulis pertanyaanmu, misalnya jam yang sedang kamu cari."
+        class={`${inputClass} mt-2 resize-y`}
+      ></textarea>
+    </div>
+
+    <div class="sm:col-span-2">
+      <button
+        type="submit"
+        class="w-full rounded-full bg-gold py-3.5 text-center text-[0.95rem] font-semibold text-[#14110A] transition-all duration-200 hover:-translate-y-px hover:bg-gold-light"
+      >
+        Kirim via WhatsApp
+      </button>
+
+      <p id="contactStatus" class="mt-4 hidden text-[0.88rem] leading-relaxed text-ink-dim" role="status">
+        WhatsApp dibuka di tab baru. Kalau tidak muncul,
+        <a
+          id="contactWaLink"
+          href={WHATSAPP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-gold-light underline underline-offset-4 hover:text-ink"
+        >
+          buka WhatsApp di sini
+        </a>.
+      </p>
+    </div>
+  </form>
+</div>
+
+<style>
+  /* Status error ditulis di CSS biasa supaya tidak bergantung pada varian Tailwind. */
+  .contact-input[aria-invalid='true'] {
+    border-color: #f87171;
+  }
+</style>
+
+<script>
+  const form = document.getElementById('contactForm') as HTMLFormElement | null;
+  const statusEl = document.getElementById('contactStatus');
+  const waLink = document.getElementById('contactWaLink') as HTMLAnchorElement | null;
+
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const isValid = (id: string, value: string) => {
+    if (id === 'email') return EMAIL_RE.test(value);
+    if (id === 'phone') return value.replace(/\D/g, '').length >= 8;
+    return value.length > 0;
+  };
+
+  const setError = (input: HTMLInputElement, show: boolean) => {
+    const errorEl = document.getElementById(`${input.id}-error`);
+    if (!errorEl) return;
+    if (show) {
+      errorEl.textContent = input.dataset.error ?? '';
+      errorEl.classList.remove('hidden');
+      input.setAttribute('aria-invalid', 'true');
+      input.setAttribute('aria-describedby', errorEl.id);
+    } else {
+      errorEl.textContent = '';
+      errorEl.classList.add('hidden');
+      input.removeAttribute('aria-invalid');
+      input.removeAttribute('aria-describedby');
+    }
+  };
+
+  const required = form ? Array.from(form.querySelectorAll<HTMLInputElement>('input[required]')) : [];
+
+  // Error hilang begitu isian diperbaiki.
+  required.forEach((input) => {
+    input.addEventListener('input', () => {
+      if (input.getAttribute('aria-invalid') === 'true' && isValid(input.id, input.value.trim())) {
+        setError(input, false);
+      }
+    });
+  });
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    let firstInvalid: HTMLInputElement | null = null;
+    required.forEach((input) => {
+      const ok = isValid(input.id, input.value.trim());
+      setError(input, !ok);
+      if (!ok && !firstInvalid) firstInvalid = input;
+    });
+
+    if (firstInvalid) {
+      (firstInvalid as HTMLInputElement).focus();
+      statusEl?.classList.add('hidden');
+      return;
+    }
+
+    const val = (id: string) => (document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement).value.trim();
+    const message = [
+      'Halo Jubejam, saya ingin bertanya.',
+      '',
+      `Nama: ${val('firstName')} ${val('lastName')}`,
+      `Email: ${val('email')}`,
+      `Nomor telepon: ${val('phone')}`,
+      `Pesan: ${val('message') || '-'}`,
+    ].join('\n');
+
+    const target = `${form.dataset.whatsapp}?text=${encodeURIComponent(message)}`;
+    if (waLink) waLink.href = target;
+    statusEl?.classList.remove('hidden');
+    window.open(target, '_blank', 'noopener');
+  });
+</script>

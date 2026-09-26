@@ -1,0 +1,30 @@
+---
+// Bagian atas halaman Contact Us: breadcrumb, judul, deskripsi singkat.
+// Pola sama dengan EventsHero/CatalogHero, tanpa foto.
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = 'Contact Us',
+  description = 'Mau tanya soal jam, datang ke toko, atau butuh bantuan? Kirim pesan lewat formulir atau hubungi kami langsung.',
+} = Astro.props;
+---
+
+<section aria-labelledby="contact-title" class="border-b border-hairline bg-black">
+  <div class="mx-auto max-w-[1180px] px-5 py-10 sm:px-8 sm:py-14">
+    <nav aria-label="Breadcrumb" class="text-[0.78rem] text-ink-dim">
+      <a href="/" class="transition-colors hover:text-ink">Home</a>
+      <span aria-hidden="true" class="mx-1.5">/</span>
+      <span aria-current="page" class="text-ink">{title}</span>
+    </nav>
+
+    <h1 id="contact-title" class="mt-4 font-serif text-[clamp(2.2rem,4.6vw,3.6rem)] font-normal leading-[1.08] text-ink">
+      {title}
+    </h1>
+
+    <p class="mt-5 max-w-[46ch] text-[0.98rem] leading-relaxed text-ink-dim">
+      {description}
+    </p>
+  </div>
+</section>

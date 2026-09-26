@@ -1,0 +1,60 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  active?: 'produk' | 'events' | 'updates' | 'testimoni' | 'dashboard';
+}
+
+const { title, active = 'produk' } = Astro.props;
+
+const navItems = [
+  { href: '/admin/produk', label: 'Produk', key: 'produk' as const },
+  { href: '/admin/events', label: 'Event', key: 'events' as const },
+  { href: '/admin/updates', label: 'Update', key: 'updates' as const },
+  { href: '/admin/testimoni', label: 'Testimoni', key: 'testimoni' as const },
+];
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} — Admin Jubejam</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="min-h-screen bg-bg text-ink">
+    <div class="flex min-h-screen">
+      <aside class="w-56 shrink-0 border-r border-hairline bg-bg-panel px-4 py-6 flex flex-col">
+        <a href="/admin/produk" class="font-serif text-lg text-gold-light mb-8 px-2">Jubejam Admin</a>
+        <nav class="flex-1 space-y-1">
+          {navItems.map((item) => (
+            <a
+              href={item.href}
+              class={`block rounded px-3 py-2 text-sm transition-colors ${
+                active === item.key ? 'bg-bg-panel-2 text-ink' : 'text-ink-dim hover:text-ink'
+              }`}
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
+        <form method="POST" action="/api/admin/logout">
+          <button type="submit" class="w-full text-left rounded px-3 py-2 text-sm text-ink-dim hover:text-ink">
+            Keluar
+          </button>
+        </form>
+      </aside>
+      <main class="flex-1 px-8 py-8">
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,66 @@
+---
+import { faqs, WHATSAPP_DISPLAY, WHATSAPP_URL } from '../../data/faqs';
+---
+
+<!--
+  Accordion pakai <details>/<summary> bawaan browser: bisa dibuka lewat keyboard,
+  terbaca screen reader, dan tetap jalan tanpa JavaScript.
+  Atribut name="faq" membuat hanya satu item terbuka sekaligus (browser modern);
+  di browser lama semua item tetap bisa dibuka satu per satu.
+-->
+<div class="border-t border-hairline">
+  {
+    faqs.map((item, i) => (
+      <details name="faq" open={i === 0} class="group border-b border-hairline">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-6 px-5 py-6 text-left transition-colors duration-200 hover:text-gold-light sm:px-6 sm:py-7 [&::-webkit-details-marker]:hidden">
+          <h3 class="text-[1.05rem] font-medium leading-snug sm:text-[1.3rem]">{item.question}</h3>
+          <svg
+            viewBox="0 0 12 12"
+            class="h-3 w-3 flex-shrink-0 rotate-180 fill-current transition-transform duration-300 group-open:rotate-0"
+            aria-hidden="true"
+          >
+            <path d="M6 2.5 11 9.5H1z" />
+          </svg>
+        </summary>
+
+        <div class="faq-answer space-y-4 bg-bg-panel px-5 py-7 text-[0.98rem] leading-relaxed text-ink/90 sm:px-8 sm:py-9 sm:text-[1.05rem]">
+          {item.answer.map((p) =>
+            p.includes(WHATSAPP_DISPLAY) ? (
+              <p>
+                {p.split(WHATSAPP_DISPLAY)[0]}
+                <a
+                  href={WHATSAPP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-gold-light underline underline-offset-4 transition-colors hover:text-ink"
+                >
+                  {WHATSAPP_DISPLAY}
+                </a>
+                {p.split(WHATSAPP_DISPLAY)[1]}
+              </p>
+            ) : (
+              <p>{p}</p>
+            )
+          )}
+        </div>
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  /* fade-in halus saat item dibuka */
+  details[open] > .faq-answer {
+    animation: faq-open 0.3s ease-out;
+  }
+  @keyframes faq-open {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

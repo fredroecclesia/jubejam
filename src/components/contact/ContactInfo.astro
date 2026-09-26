@@ -1,0 +1,80 @@
+---
+// Kartu kontak langsung: WhatsApp, email, dan alamat toko.
+import { WHATSAPP_DISPLAY, WHATSAPP_URL } from '../../data/faqs';
+import { CONTACT_EMAIL, MAP_LINK_URL, STORE_ADDRESS } from '../../data/contact';
+
+const cards = [
+  {
+    href: WHATSAPP_URL,
+    external: true,
+    title: WHATSAPP_DISPLAY,
+    note: 'Chat lewat WhatsApp',
+    icon: 'phone',
+  },
+  {
+    href: `mailto:${CONTACT_EMAIL}`,
+    external: false,
+    title: CONTACT_EMAIL,
+    note: 'Kirim email',
+    icon: 'mail',
+  },
+  {
+    href: MAP_LINK_URL,
+    external: true,
+    title: STORE_ADDRESS,
+    note: 'Buka di Google Maps',
+    icon: 'pin',
+    wide: true,
+  },
+];
+---
+
+<div>
+  <h2 class="font-serif text-[clamp(1.6rem,3vw,2.2rem)] font-normal leading-tight text-ink">Hubungi langsung</h2>
+
+  <ul class="mt-7 grid gap-4 sm:grid-cols-2">
+    {
+      cards.map((c) => (
+        <li class:list={[c.wide && 'sm:col-span-2']}>
+          <a
+            href={c.href}
+            target={c.external ? '_blank' : undefined}
+            rel={c.external ? 'noopener noreferrer' : undefined}
+            class="flex h-full flex-col items-center gap-3 rounded-lg border border-hairline bg-black/30 px-5 py-6 text-center transition-colors duration-200 hover:border-gold"
+          >
+            <span class="flex h-11 w-11 items-center justify-center rounded-full bg-gold text-[#14110A]">
+              <svg
+                viewBox="0 0 24 24"
+                class="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                {c.icon === 'phone' && (
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                )}
+                {c.icon === 'mail' && (
+                  <>
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                    <polyline points="22,6 12,13 2,6" />
+                  </>
+                )}
+                {c.icon === 'pin' && (
+                  <>
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </>
+                )}
+              </svg>
+            </span>
+            <span class="break-words text-[0.98rem] text-ink">{c.title}</span>
+            <span class="text-[0.85rem] text-gold-light">{c.note}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</div>

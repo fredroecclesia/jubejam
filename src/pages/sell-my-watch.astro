@@ -1,0 +1,21 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/common/Header.astro';
+import Footer from '../components/common/Footer.astro';
+import SellHero from '../components/sell/SellHero.astro';
+import SellForm from '../components/sell/SellForm.astro';
+---
+
+<Layout
+  title="Sell My Watch — Jubejam"
+  description="Jual jam mewah Anda ke Jubejam. Isi data, merek, dan harga yang diinginkan, lalu langsung terhubung ke WhatsApp admin kami."
+>
+  <Header />
+
+  <main>
+    <SellHero />
+    <SellForm />
+  </main>
+
+  <Footer />
+</Layout>

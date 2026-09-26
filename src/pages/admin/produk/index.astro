@@ -1,0 +1,92 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { listAllProductsAdmin, formatRupiah, yearLabel } from '../../../data/products';
+
+export const prerender = false;
+
+const products = await listAllProductsAdmin();
+---
+
+<AdminLayout title="Produk" active="produk">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="font-serif text-2xl text-ink">Produk</h1>
+      <p class="text-sm text-ink-dim">{products.length} produk total.</p>
+    </div>
+    <a href="/admin/produk/baru" class="rounded bg-gold text-[#14110A] font-medium px-4 py-2 text-sm hover:bg-gold-light transition-colors">
+      + Tambah Produk
+    </a>
+  </div>
+
+  {products.length === 0 ? (
+    <p class="text-ink-dim border border-dashed border-hairline rounded-lg px-6 py-12 text-center">
+      Belum ada produk. Klik "Tambah Produk" untuk mulai isi katalog.
+    </p>
+  ) : (
+    <div class="border border-hairline rounded-lg overflow-hidden">
+      <table class="w-full text-sm">
+        <thead class="bg-bg-panel-2 text-ink-dim text-left">
+          <tr>
+            <th class="px-4 py-3 font-normal">Foto</th>
+            <th class="px-4 py-3 font-normal">Produk</th>
+            <th class="px-4 py-3 font-normal">Reference</th>
+            <th class="px-4 py-3 font-normal">Harga</th>
+            <th class="px-4 py-3 font-normal">Status</th>
+            <th class="px-4 py-3 font-normal"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {products.map((p) => (
+            <tr class="border-t border-hairline">
+              <td class="px-4 py-3">
+                <img src={p.image} alt={p.imageAlt} class="w-12 h-12 object-cover rounded" />
+              </td>
+              <td class="px-4 py-3">
+                <div class="text-ink">{p.brandName} {p.model}</div>
+                <div class="text-ink-dim text-xs">{yearLabel(p.year)}</div>
+              </td>
+              <td class="px-4 py-3 text-ink-dim font-mono text-xs">{p.reference}</td>
+              <td class="px-4 py-3 text-ink">{formatRupiah(p.price)}</td>
+              <td class="px-4 py-3">
+                <span class={`text-xs px-2 py-1 rounded ${p.status === 'sold' ? 'bg-[#3a1f1f] text-[#F09595]' : 'bg-[#1f3a24] text-[#9ad9a4]'}`}>
+                  {p.status === 'sold' ? 'Terjual' : 'Tersedia'}
+                </span>
+              </td>
+              <td class="px-4 py-3 text-right space-x-3 whitespace-nowrap">
+                <a href={`/admin/produk/${p.id}/edit`} class="text-gold-light hover:underline">Edit</a>
+                <button
+                  type="button"
+                  class="text-[#F09595] hover:underline js-delete-produk"
+                  data-id={p.id}
+                  data-nama={`${p.brandName} ${p.model}`}
+                >
+                  Hapus
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+</AdminLayout>
+
+<script>
+  // Konfirmasi + panggil DELETE, lalu reload list. Vanilla JS biasa (bukan
+  // React island) karena cuma satu aksi sederhana per baris tabel.
+  document.querySelectorAll('.js-delete-produk').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const id = btn.getAttribute('data-id');
+      const nama = btn.getAttribute('data-nama');
+      if (!confirm(`Hapus produk "${nama}"? Tindakan ini tidak bisa dibatalkan.`)) return;
+
+      const res = await fetch(`/api/admin/produk/${id}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error ?? 'Gagal menghapus produk.');
+        return;
+      }
+      window.location.reload();
+    });
+  });
+</script>

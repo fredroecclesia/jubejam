@@ -1,0 +1,98 @@
+---
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/produk', label: 'Produk/Katalog' },
+  { href: '/faqs', label: 'FAQs' },
+  { href: '/events-updates', label: 'Event & Updates' },
+  { href: '/sell-my-watch', label: 'Sell My Watch' },
+];
+
+// Aktif untuk halamannya sendiri dan sub-halamannya (mis. /produk/rolex-...).
+const isActive = (href: string) =>
+  href === '/' ? currentPath === '/' : currentPath === href || currentPath.startsWith(`${href}/`);
+---
+
+<header
+  id="siteHeader"
+  class="sticky top-0 z-[80] border-b border-hairline bg-black/70 backdrop-blur-md"
+>
+  <nav class="mx-auto flex max-w-[1440px] items-center justify-between gap-6 px-5 py-3 sm:px-8 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:px-[6vw]">
+    <a href="/" class="flex items-center">
+      <img src="/logo.webp" alt="Jubejam" class="block h-9 w-auto sm:h-11" width="303" height="142" />
+    </a>
+
+    <div class="hidden items-center gap-10 text-[0.9rem] font-medium lg:flex">
+      {
+        navLinks.map((link) => (
+          <a
+            href={link.href}
+            aria-current={isActive(link.href) ? 'page' : undefined}
+            class:list={[
+              'whitespace-nowrap border-b-2 border-transparent py-[1.35rem] -my-[1.35rem] opacity-85 transition-all duration-200 hover:opacity-100',
+              isActive(link.href) && 'border-gold text-ink opacity-100',
+            ]}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="flex items-center justify-end gap-3.5">
+      <button
+        id="burgerBtn"
+        class="flex h-9 w-9 items-center justify-center rounded-lg border border-hairline bg-transparent lg:hidden"
+        aria-label="Buka menu"
+        aria-expanded="false"
+        aria-controls="mobileMenu"
+      >
+        <span class="relative block h-[1.5px] w-[15px] bg-ink before:absolute before:-top-[5px] before:left-0 before:block before:h-[1.5px] before:w-[15px] before:bg-ink before:content-[''] after:absolute after:top-[5px] after:left-0 after:block after:h-[1.5px] after:w-[15px] after:bg-ink after:content-['']"
+        ></span>
+      </button>
+      <a href="/contact-us" class="cta-pill inline-flex items-center gap-2 whitespace-nowrap rounded-full px-6 py-[11px] text-[0.85rem] font-medium text-[#14110A] transition-all duration-200 hover:-translate-y-px hover:brightness-110" style="background-image:linear-gradient(100deg,#e9c98f,#d2a265)">
+        Contact Us
+        <svg viewBox="0 0 24 24" class="hidden h-4 w-4 sm:block" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+      </a>
+    </div>
+  </nav>
+
+  <div id="mobileMenu" class="hidden border-t border-hairline lg:hidden">
+    <div class="flex flex-col gap-1 px-5 py-4 text-sm font-medium">
+      {
+        navLinks.map((link) => (
+          <a href={link.href} class="rounded-md px-2 py-2.5 opacity-85 transition-opacity hover:bg-white/5 hover:opacity-100">
+            {link.label}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</header>
+
+<script>
+  // Progressive enhancement kecil — tidak perlu React island untuk ini.
+  const burgerBtn = document.getElementById('burgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  burgerBtn?.addEventListener('click', () => {
+    const isOpen = mobileMenu?.classList.toggle('hidden') === false;
+    burgerBtn.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  // Publikasikan tinggi header sebagai --header-h (dipakai hero sticky & scroll-margin
+  // anchor). Yang diukur hanya bar navigasi + border bawah, BUKAN menu mobile, supaya
+  // hero tidak bergeser ketika menu dibuka.
+  const header = document.getElementById('siteHeader');
+  const nav = header?.querySelector('nav');
+  if (header && nav) {
+    const publish = () => {
+      const border = parseFloat(getComputedStyle(header).borderBottomWidth) || 0;
+      const h = nav.getBoundingClientRect().height + border;
+      document.documentElement.style.setProperty('--header-h', `${h}px`);
+    };
+    publish();
+    new ResizeObserver(publish).observe(nav);
+  }
+</script>

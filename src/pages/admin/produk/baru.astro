@@ -1,0 +1,18 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import ProductForm from '../../../components/admin/ProductForm.jsx';
+import { brands, categories, genderOptions, conditionOptions } from '../../../data/products';
+
+export const prerender = false;
+---
+
+<AdminLayout title="Tambah Produk" active="produk">
+  <h1 class="font-serif text-2xl text-ink mb-6">Tambah Produk</h1>
+  <ProductForm
+    client:load
+    brands={brands}
+    categories={categories}
+    genderOptions={genderOptions}
+    conditionOptions={conditionOptions}
+  />
+</AdminLayout>

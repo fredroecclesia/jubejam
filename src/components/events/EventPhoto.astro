@@ -1,0 +1,55 @@
+---
+// Event & update ditampilkan sebagai foto saja (semua teks sudah ada di gambar).
+// Kalau `href` diisi (selain kosong / "#"), foto jadi link; link eksternal
+// dibuka di tab baru.
+interface Props {
+  src: string;
+  alt: string;
+  href?: string;
+  variant?: 'featured' | 'grid' | 'update';
+}
+
+const { src, alt, href = '', variant = 'grid' } = Astro.props;
+const linked = href !== '' && href !== '#';
+const external = /^https?:\/\//.test(href);
+const featured = variant === 'featured';
+
+const dims = {
+  featured: { w: 1600, h: 778, aspect: 'aspect-[1600/778]', hover: 'group-hover:scale-[1.02]' },
+  grid: { w: 900, h: 438, aspect: 'aspect-[900/438]', hover: 'group-hover:scale-105' },
+  update: { w: 537, h: 354, aspect: 'aspect-[537/354]', hover: 'group-hover:scale-105' },
+}[variant];
+const frame = 'group block overflow-hidden rounded-lg border border-hairline bg-bg-panel-2 transition-colors duration-200';
+---
+{
+  linked ? (
+    <a
+      href={href}
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noopener noreferrer' : undefined}
+      class:list={[frame, 'hover:border-gold']}
+    >
+      <img
+        src={src}
+        alt={alt}
+        width={dims.w}
+        height={dims.h}
+        loading={featured ? 'eager' : 'lazy'}
+        decoding="async"
+        class:list={['h-auto w-full object-cover transition-transform duration-[1500ms] ease-out', dims.aspect, dims.hover]}
+      />
+    </a>
+  ) : (
+    <div class={frame}>
+      <img
+        src={src}
+        alt={alt}
+        width={dims.w}
+        height={dims.h}
+        loading={featured ? 'eager' : 'lazy'}
+        decoding="async"
+        class:list={['h-auto w-full object-cover', dims.aspect]}
+      />
+    </div>
+  )
+}

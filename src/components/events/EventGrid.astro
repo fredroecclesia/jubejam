@@ -1,0 +1,59 @@
+---
+interface EventItem {
+  src: string;
+  alt: string;
+  status: string;
+  soon?: boolean;
+  title: string;
+  description: string;
+  href: string;
+  linkLabel: string;
+}
+
+interface Props {
+  events: EventItem[];
+}
+
+const { events } = Astro.props;
+---
+
+<ul class="grid grid-cols-1 gap-5 sm:grid-cols-3">
+  {
+    events.map((item) => (
+      <li>
+        <a href={item.href} class="group flex h-full flex-col overflow-hidden rounded-lg border border-hairline bg-bg-panel transition-colors duration-200 hover:border-gold">
+          <div class="overflow-hidden bg-bg-panel-2">
+            <img
+              src={item.src}
+              alt={item.alt}
+              width="900"
+              height="438"
+              loading="lazy"
+              decoding="async"
+              class="aspect-[900/438] h-auto w-full object-cover transition-transform duration-[1500ms] ease-out group-hover:scale-105"
+            />
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <span
+              class:list={[
+                'mb-3 inline-flex w-fit items-center gap-2 rounded-full border px-2.5 py-1 text-[0.72rem] font-medium',
+                item.soon ? 'border-gold text-gold-light' : 'border-hairline text-ink-dim',
+              ]}
+            >
+              <i class:list={['block h-1.5 w-1.5 rounded-full', item.soon ? 'bg-gold-light' : 'bg-ink-dim']} aria-hidden="true" />
+              {item.status}
+            </span>
+            <h3 class="text-[1.02rem] font-medium leading-snug text-ink">{item.title}</h3>
+            <p class="mt-2 text-[0.86rem] leading-relaxed text-ink-dim">{item.description}</p>
+            <span class="mt-auto inline-flex items-center gap-1.5 pt-5 text-[0.84rem] font-semibold text-gold-light">
+              {item.linkLabel}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-[15px] w-[15px] transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </span>
+          </div>
+        </a>
+      </li>
+    ))
+  }
+</ul>

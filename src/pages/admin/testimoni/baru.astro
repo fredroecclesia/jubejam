@@ -1,0 +1,18 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import TestimonialForm from '../../../components/admin/TestimonialForm.jsx';
+import { listAllProductsAdmin } from '../../../data/products';
+
+export const prerender = false;
+
+const productOptions = (await listAllProductsAdmin()).map((p) => ({
+  id: p.id,
+  label: `${p.brandName} ${p.model} — ${p.reference}`,
+  sold: p.status === 'sold',
+}));
+---
+
+<AdminLayout title="Tambah Testimoni" active="testimoni">
+  <h1 class="font-serif text-2xl text-ink mb-6">Tambah Testimoni</h1>
+  <TestimonialForm client:load productOptions={productOptions} />
+</AdminLayout>

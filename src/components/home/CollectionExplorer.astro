@@ -1,0 +1,304 @@
+---
+// Tiga sub-section (Kategori Rolex, Brand, By Gender) mengikuti desain referensi:
+// tiap sub-section punya header sendiri + tautan "Lihat semua", dan dua di antaranya
+// berupa carousel dengan tombol navigasi kiri/kanan.
+import { catalogHref, type Gender } from '../../data/products';
+
+const models = [
+  { src: '/categories/cat-datejust-men.webp', label: 'Datejust', tagline: 'Elegan dalam setiap detail.', slug: 'datejust-men' },
+  { src: '/categories/cat-datejust-ladies.webp', label: 'Datejust Ladies', tagline: 'Klasik yang tak lekang waktu.', slug: 'datejust-ladies' },
+  { src: '/categories/cat-submariner.webp', label: 'Submariner', tagline: 'Tangguh di kedalaman.', slug: 'submariner' },
+  { src: '/categories/cat-gmt-master.webp', label: 'GMT-Master', tagline: 'Jelajah tanpa batas.', slug: 'gmt-master' },
+  { src: '/categories/cat-daytona.webp', label: 'Daytona', tagline: 'Ikon performa dan presisi.', slug: 'daytona' },
+  { src: '/categories/cat-sea-dweller.webp', label: 'Sea-Dweller', tagline: 'Kedalaman tanpa kompromi.', slug: 'sea-dweller' },
+];
+
+// Slug harus cocok dengan `brands` di data/products.ts.
+const brands = [
+  { src: '/brands/brand-rolex.webp', name: 'Rolex', slug: 'rolex' },
+  { src: '/brands/brand-ap.webp', name: 'Audemars Piguet', slug: 'audemars-piguet' },
+  { src: '/brands/brand-breitling.webp', name: 'Breitling', slug: 'breitling' },
+  { src: '/brands/brand-cartier.webp', name: 'Cartier', slug: 'cartier' },
+  { src: '/brands/brand-franck-muller.webp', name: 'Franck Muller', slug: 'franck-muller' },
+  { src: '/brands/brand-hublot.webp', name: 'Hublot', slug: 'hublot' },
+  { src: '/brands/brand-omega.webp', name: 'Omega', slug: 'omega' },
+  { src: '/brands/brand-panerai.webp', name: 'Panerai', slug: 'panerai' },
+  { src: '/brands/brand-patek-philippe.webp', name: 'Patek Philippe', slug: 'patek-philippe' },
+  { src: '/brands/brand-richard-mille.webp', name: 'Richard Mille', slug: 'richard-mille' },
+  { src: '/brands/brand-zenith.webp', name: 'Zenith', slug: 'zenith' },
+];
+
+const genders: { src: string; label: string; tag: string; tagline: string; alt: string; value: Gender }[] = [
+  { src: '/gender/gender-men.webp', label: "Men's Collection", tag: 'MEN', tagline: 'Kekuatan, presisi, dan karakter dalam setiap detail.', value: 'men', alt: 'Audemars Piguet Royal Oak Offshore Chronograph hitam untuk pria' },
+  { src: '/gender/gender-unisex.webp', label: 'Unisex Collection', tag: 'UNISEX', tagline: 'Satu gaya, untuk semua.', value: 'unisex', alt: 'Rolex Datejust two-tone dengan dial Jubilee dan penanda berlian, cocok untuk pria dan wanita' },
+  { src: '/gender/gender-ladies.webp', label: "Women's Collection", tag: 'WOMEN', tagline: 'Elegansi dan keanggunan untuk setiap momen.', value: 'ladies', alt: 'Rolex Datejust two-tone dengan bezel berlian dan dial mother-of-pearl untuk wanita' },
+];
+
+// Ikon panah lingkaran dipakai berulang: tautan "Lihat semua" & tombol carousel.
+const arrowIcon = `<svg viewBox="0 0 20 20" fill="none" class="h-3.5 w-3.5"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+---
+<section id="jelajah" aria-labelledby="explore-title" class="bg-bg-panel py-16 sm:py-24">
+  <div class="mx-auto max-w-[1180px] px-5 sm:px-8">
+
+    <!-- ================= Kategori Rolex ================= -->
+    <div class="mb-6 sm:mb-8">
+      <div class="mb-8 flex items-end justify-between gap-5 sm:mb-10">
+        <div class="flex flex-col gap-3">
+          <p class="eyebrow">Rolex Categories</p>
+          <h2 id="explore-title" class="section-title">Explore by Category</h2>
+          <p class="section-lead">Temukan koleksi jam tangan Rolex sesuai dengan kategori favorit Anda.</p>
+        </div>
+        <a href={catalogHref()} class="hidden shrink-0 items-center gap-2 text-[0.78rem] font-medium uppercase tracking-[0.2em] text-gold-light transition-colors duration-200 hover:text-ink sm:inline-flex">
+          See all
+          <span class="flex h-8 w-8 items-center justify-center rounded-full border border-gold text-gold-light" set:html={arrowIcon} />
+        </a>
+      </div>
+
+      <div class="relative">
+        <button type="button" data-scroll="models" data-dir="-1" aria-label="Kategori sebelumnya" class="absolute -left-3 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-hairline bg-bg-panel text-ink transition-colors duration-200 hover:border-gold hover:text-gold-light disabled:pointer-events-none disabled:opacity-30 sm:flex">
+          <svg viewBox="0 0 20 20" fill="none" class="h-4 w-4"><path d="M12.5 5 7.5 10l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+
+        <ul data-scroller="models" class="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {
+            models.map((m) => (
+              <li class="w-[46%] shrink-0 snap-start sm:w-[31%] lg:w-[calc(20%-13px)]">
+                <a href={catalogHref({ kategori: m.slug })} class="group block overflow-hidden rounded-lg border border-hairline bg-bg transition-colors duration-200 hover:border-gold/60">
+                  <div class="overflow-hidden">
+                    <img src={m.src} alt={`Koleksi Rolex ${m.label}`} width="800" height="900" loading="lazy" decoding="async" class="aspect-[4/5] h-auto w-full object-cover transition-transform duration-[1500ms] ease-out group-hover:scale-105" />
+                  </div>
+                  <div class="flex items-center justify-between gap-3 p-4">
+                    <div class="min-w-0">
+                      <p class="eyebrow !text-[0.65rem]">Rolex</p>
+                      <span class="mt-1 mb-1.5 block h-px w-6 bg-gold/60" />
+                      <p class="truncate font-serif text-[1.05rem] text-ink">{m.label}</p>
+                      <p class="truncate text-[0.8rem] text-ink-dim">{m.tagline}</p>
+                    </div>
+                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gold text-gold-light transition-colors duration-200 group-hover:bg-gold group-hover:text-[#14110A]" set:html={arrowIcon} />
+                  </div>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+
+        <button type="button" data-scroll="models" data-dir="1" aria-label="Kategori berikutnya" class="absolute -right-3 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-hairline bg-bg-panel text-ink transition-colors duration-200 hover:border-gold hover:text-gold-light disabled:pointer-events-none disabled:opacity-30 sm:flex">
+          <svg viewBox="0 0 20 20" fill="none" class="h-4 w-4"><path d="M7.5 5l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= Other Brands ================= -->
+    <div class="mb-6 border-t border-hairline pt-6 sm:mb-8 sm:pt-8">
+      <div class="mb-8 flex items-end justify-between gap-5 sm:mb-10">
+        <div class="flex flex-col gap-3">
+          <p class="eyebrow">Other Brands</p>
+          <h2 class="section-title">Trusted Luxury Brands</h2>
+          <p class="section-lead">Kami juga menghadirkan berbagai merek jam tangan terkenal dunia dengan kualitas terbaik.</p>
+        </div>
+        <a href={catalogHref()} class="hidden shrink-0 items-center gap-2 text-[0.78rem] font-medium uppercase tracking-[0.2em] text-gold-light transition-colors duration-200 hover:text-ink sm:inline-flex">
+          See all
+          <span class="flex h-8 w-8 items-center justify-center rounded-full border border-gold text-gold-light" set:html={arrowIcon} />
+        </a>
+      </div>
+
+      <div class="relative flex items-center gap-3">
+        <button type="button" data-scroll="brands" data-dir="-1" aria-label="Brand sebelumnya" class="hidden h-10 w-10 shrink-0 items-center justify-center rounded-full border border-hairline bg-bg-panel text-ink transition-colors duration-200 hover:border-gold hover:text-gold-light disabled:pointer-events-none disabled:opacity-30 sm:flex">
+          <svg viewBox="0 0 20 20" fill="none" class="h-4 w-4"><path d="M12.5 5 7.5 10l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+
+        <ul data-scroller="brands" class="flex flex-1 snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {
+            brands.map((b) => (
+              <li class="w-[42%] shrink-0 snap-start xs:w-[32%] sm:w-[23%] lg:w-[calc(100%/6-14px)]">
+                <a href={catalogHref({ brand: b.slug })} class="group flex h-32 items-center justify-center px-3">
+                  <img src={b.src} alt={b.name} loading="lazy" decoding="async" class="h-14 w-auto max-w-full object-contain opacity-90 transition duration-300 ease-out group-hover:scale-105 group-hover:opacity-100 sm:h-16 lg:h-[4.5rem]" />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+
+        <button type="button" data-scroll="brands" data-dir="1" aria-label="Brand berikutnya" class="hidden h-10 w-10 shrink-0 items-center justify-center rounded-full border border-hairline bg-bg-panel text-ink transition-colors duration-200 hover:border-gold hover:text-gold-light disabled:pointer-events-none disabled:opacity-30 sm:flex">
+          <svg viewBox="0 0 20 20" fill="none" class="h-4 w-4"><path d="M7.5 5l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= By Gender ================= -->
+    <div class="border-t border-hairline pt-6 sm:pt-8">
+      <div class="mb-8 flex items-end justify-between gap-5 sm:mb-10">
+        <div class="flex flex-col gap-3">
+          <p class="eyebrow">By Gender</p>
+          <h2 class="section-title">Find Your Perfect Watch</h2>
+          <p class="section-lead">Nikmati koleksi jam tangan terbaik untuk pria dan wanita, dengan desain yang elegan dan berkelas.</p>
+        </div>
+        <a href={catalogHref()} class="hidden shrink-0 items-center gap-2 text-[0.78rem] font-medium uppercase tracking-[0.2em] text-gold-light transition-colors duration-200 hover:text-ink sm:inline-flex">
+          See all
+          <span class="flex h-8 w-8 items-center justify-center rounded-full border border-gold text-gold-light" set:html={arrowIcon} />
+        </a>
+      </div>
+
+      <ul class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        {
+          genders.map((g) => (
+            <li>
+              <a href={catalogHref({ gender: g.value })} class="group relative block aspect-[16/10] overflow-hidden rounded-lg border border-hairline md:aspect-[4/3]">
+                <img src={g.src} alt={g.alt} width="1280" height="853" loading="lazy" decoding="async" class="h-full w-full object-cover transition-transform duration-[1500ms] ease-out group-hover:scale-105" />
+                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/25" />
+                <div class="absolute inset-x-5 bottom-5 flex items-end justify-between gap-3">
+                  <div>
+                    <p class="eyebrow !text-[0.65rem]">{g.tag}</p>
+                    <p class="font-serif text-[1.35rem] leading-tight text-ink">{g.label}</p>
+                    <p class="mt-1 max-w-[26ch] text-[0.82rem] text-ink-dim">{g.tagline}</p>
+                  </div>
+                  <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gold text-gold-light transition-colors duration-200 group-hover:bg-gold group-hover:text-[#14110A]" set:html={arrowIcon} />
+                </div>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  /* Kursor "tangan" di seluruh area carousel (termasuk di atas kartu/link),
+     berubah jadi "menggenggam" selama drag. */
+  [data-scroller] { cursor: grab; }
+  [data-scroller] a { cursor: inherit; }
+  [data-scroller].is-dragging,
+  [data-scroller].is-dragging * { cursor: grabbing !important; }
+  [data-scroller].is-dragging { user-select: none; -webkit-user-select: none; }
+</style>
+
+<script>
+  // Carousel: tombol kiri/kanan + drag (klik-tahan lalu geser) dengan mouse.
+  // Sentuhan (touch) sudah punya scroll horizontal bawaan browser, jadi hanya
+  // pointer "mouse" yang ditangani manual.
+  function initScroller(name: string) {
+    const scroller = document.querySelector<HTMLElement>(`[data-scroller="${name}"]`);
+    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>(`[data-scroll="${name}"]`));
+    if (!scroller) return;
+
+    // ---------- Tombol panah ----------
+    const update = () => {
+      const max = scroller.scrollWidth - scroller.clientWidth - 1;
+      buttons.forEach((btn) => {
+        const dir = Number(btn.dataset.dir);
+        btn.disabled = dir < 0 ? scroller.scrollLeft <= 0 : scroller.scrollLeft >= max;
+      });
+    };
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const dir = Number(btn.dataset.dir);
+        scroller.scrollBy({ left: dir * scroller.clientWidth * 0.9, behavior: 'smooth' });
+      });
+    });
+
+    scroller.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+
+    // ---------- Drag-to-scroll ----------
+    const DRAG_THRESHOLD = 5; // px sebelum gerakan dianggap drag (bukan klik biasa)
+
+    let pressed = false; // tombol mouse sedang ditekan
+    let dragging = false; // gerakan sudah melewati threshold
+    let suppressClick = false;
+    let pointerId = -1;
+    let startX = 0;
+    let startScroll = 0;
+    let lastX = 0;
+    let lastT = 0;
+    let velocity = 0; // px/ms, arah gerak pointer
+
+    // Cegah drag bawaan browser pada gambar & tautan (ini yang biasanya membatalkan
+    // event pointer sehingga carousel "tidak mau digeser").
+    scroller.addEventListener('dragstart', (e) => e.preventDefault());
+    scroller.querySelectorAll('img, a').forEach((el) => el.setAttribute('draggable', 'false'));
+
+    scroller.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      pressed = true;
+      dragging = false;
+      suppressClick = false;
+      pointerId = e.pointerId;
+      startX = lastX = e.clientX;
+      startScroll = scroller.scrollLeft;
+      lastT = performance.now();
+      velocity = 0;
+    });
+
+    scroller.addEventListener('pointermove', (e) => {
+      if (!pressed || e.pointerId !== pointerId) return;
+
+      // Tombol dilepas di luar area carousel -> batalkan.
+      if (e.buttons === 0) return endDrag();
+
+      const delta = e.clientX - startX;
+
+      if (!dragging) {
+        if (Math.abs(delta) < DRAG_THRESHOLD) return;
+        dragging = true;
+        suppressClick = true;
+        scroller.classList.add('is-dragging');
+        // Matikan snap & smooth selama drag supaya scroll mengikuti kursor 1:1.
+        scroller.style.scrollSnapType = 'none';
+        scroller.style.scrollBehavior = 'auto';
+        scroller.setPointerCapture(pointerId);
+      }
+
+      const now = performance.now();
+      const dt = now - lastT;
+      if (dt > 0) velocity = 0.8 * velocity + 0.2 * ((e.clientX - lastX) / dt);
+      lastX = e.clientX;
+      lastT = now;
+
+      scroller.scrollLeft = startScroll - delta;
+    });
+
+    function endDrag() {
+      if (!pressed) return;
+      pressed = false;
+
+      if (!dragging) return;
+      dragging = false;
+
+      if (scroller.hasPointerCapture(pointerId)) scroller.releasePointerCapture(pointerId);
+      scroller.classList.remove('is-dragging');
+
+      // Sedikit momentum (inertia) sesuai kecepatan terakhir, lalu kembalikan snap
+      // agar carousel berhenti rapi di kartu terdekat.
+      const idle = performance.now() - lastT > 80;
+      const target = scroller.scrollLeft - (idle ? 0 : velocity * 220);
+      scroller.style.scrollBehavior = '';
+      scroller.style.scrollSnapType = '';
+      scroller.scrollTo({ left: target, behavior: 'smooth' });
+    }
+
+    scroller.addEventListener('pointerup', endDrag);
+    scroller.addEventListener('pointercancel', endDrag);
+    scroller.addEventListener('lostpointercapture', endDrag);
+
+    // Setelah drag, batalkan klik berikutnya supaya menggeser tidak ikut membuka
+    // link kartu/brand yang berada di bawah kursor saat tombol dilepas.
+    scroller.addEventListener(
+      'click',
+      (e) => {
+        if (suppressClick) {
+          e.preventDefault();
+          e.stopPropagation();
+          suppressClick = false;
+        }
+      },
+      { capture: true }
+    );
+  }
+
+  initScroller('models');
+  initScroller('brands');
+</script>

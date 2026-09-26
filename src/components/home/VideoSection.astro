@@ -1,0 +1,111 @@
+---
+// Ganti nilai di bawah kalau videonya berubah.
+const videoId = 'VGu7iVUlC3E';
+const startSeconds = 2; // dari parameter &t=2s di link asli; ubah ke 0 untuk mulai dari awal
+const watchUrl = `https://www.youtube.com/watch?v=${videoId}&t=${startSeconds}s`;
+
+// maxresdefault paling tajam, tapi tidak selalu ada di semua video → script
+// otomatis turun ke hqdefault kalau gambarnya tidak tersedia.
+const thumbSrc = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
+const thumbFallback = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+---
+
+<section id="video" aria-labelledby="video-title" class="bg-bg-panel pt-16 sm:pt-24">
+  <!-- Judul pengantar di dalam container, supaya video full-bleed tidak muncul tiba-tiba
+       setelah blok teks. Padding bawah 0: video menempel ke tepi bawah section dan langsung
+       bertemu section testimoni, tanpa "celah kosong" ganda. -->
+  <div class="mx-auto mb-10 flex max-w-[1180px] flex-col gap-3 px-5 sm:mb-14 sm:px-8">
+    <p class="eyebrow">Video</p>
+    <h2 id="video-title" class="section-title">Kenal lebih dekat dengan Jubejam</h2>
+  </div>
+
+  <!--
+    Video baru dimuat saat diklik (iframe YouTube itu berat: ratusan KB script + tracking).
+    Sebelum diklik cuma ada thumbnail + tombol play. Tanpa JS, link tetap membuka YouTube.
+    Full-bleed: tanpa container, tanpa padding kiri-kanan, tanpa sudut membulat.
+  -->
+  <div
+    id="ytFrame"
+    class="relative aspect-video w-full overflow-hidden bg-black"
+    data-video-id={videoId}
+    data-start={startSeconds}
+  >
+    <a
+      id="ytFacade"
+      href={watchUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Putar video Jubejam"
+      class="group absolute inset-0 block focus-visible:outline-offset-[-4px]"
+    >
+      <img
+        id="ytThumb"
+        src={thumbSrc}
+        data-fallback={thumbFallback}
+        alt="Cuplikan video Jubejam"
+        width="1280"
+        height="720"
+        loading="lazy"
+        decoding="async"
+        class="h-full w-full object-cover transition-transform duration-[1500ms] ease-out group-hover:scale-105"
+      />
+      <div class="pointer-events-none absolute inset-0 bg-black/30 transition-colors duration-500 group-hover:bg-black/15"></div>
+
+      <span
+        class="pointer-events-none absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-gold text-[#14110A] shadow-[0_8px_30px_rgba(0,0,0,0.45)] transition-all duration-300 group-hover:scale-110 group-hover:bg-gold-light sm:h-20 sm:w-20"
+      >
+        <svg viewBox="0 0 24 24" class="ml-1 h-6 w-6 sm:h-7 sm:w-7" fill="currentColor" aria-hidden="true">
+          <path d="M8 5.5v13a1 1 0 0 0 1.53.85l10.4-6.5a1 1 0 0 0 0-1.7L9.53 4.65A1 1 0 0 0 8 5.5Z"></path>
+        </svg>
+      </span>
+    </a>
+  </div>
+</section>
+
+<script>
+  const frame = document.getElementById('ytFrame');
+  const facade = document.getElementById('ytFacade');
+  const thumb = document.getElementById('ytThumb') as HTMLImageElement | null;
+
+  // --- Thumbnail: turun ke hqdefault kalau maxresdefault tidak ada ---
+  // YouTube tidak mengembalikan 404 untuk maxresdefault yang tidak ada, tapi gambar
+  // placeholder 120px, jadi lebar gambar ikut dicek selain event error.
+  if (thumb) {
+    const fallback = thumb.dataset.fallback;
+    let swapped = false;
+    const useFallback = () => {
+      if (swapped || !fallback) return;
+      swapped = true;
+      thumb.src = fallback;
+    };
+    const check = () => {
+      if (thumb.naturalWidth > 0 && thumb.naturalWidth <= 120) useFallback();
+    };
+    thumb.addEventListener('error', useFallback);
+    thumb.addEventListener('load', check);
+    if (thumb.complete) check();
+  }
+
+  // --- Klik → ganti thumbnail dengan iframe dan langsung putar ---
+  if (frame && facade) {
+    facade.addEventListener('click', (e: MouseEvent) => {
+      // biarkan Ctrl/Cmd/Shift/klik tengah tetap membuka link di tab baru
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      e.preventDefault();
+
+      const id = frame.dataset.videoId;
+      const start = frame.dataset.start ?? '0';
+
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&start=${start}&rel=0&playsinline=1`;
+      iframe.title = 'Video Jubejam';
+      iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      iframe.allowFullscreen = true;
+      iframe.className = 'absolute inset-0 h-full w-full border-0';
+
+      frame.appendChild(iframe);
+      facade.remove();
+      iframe.focus();
+    });
+  }
+</script>

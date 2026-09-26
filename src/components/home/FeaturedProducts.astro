@@ -1,0 +1,37 @@
+---
+import ProductCard from '../catalog/ProductCard.astro';
+import { queryProducts, catalogHref } from '../../data/products';
+
+// Jam terbaru yang masih tersedia. queryProducts sudah mengurutkan terbaru dulu
+// dan menaruh jam terjual di akhir, jadi cukup filter dan ambil 4.
+const { items } = await queryProducts({ urut: 'terbaru', hal: 1 });
+const featured = items.filter((p) => p.status === 'available').slice(0, 4);
+---
+{
+  featured.length > 0 && (
+    <section id="koleksi-pilihan" aria-labelledby="featured-title" class="bg-bg py-16 sm:py-24">
+      <div class="mx-auto max-w-[1180px] px-5 sm:px-8">
+        <div class="mb-10 flex flex-col gap-5 sm:mb-14 sm:flex-row sm:items-end sm:justify-between">
+          <div class="flex flex-col gap-3">
+            <p class="eyebrow">Baru datang</p>
+            <h2 id="featured-title" class="section-title">Koleksi terbaru kami</h2>
+            <p class="section-lead">
+              Setiap jam sudah melalui quality check, lengkap dengan kelengkapan dan garansi yang tertulis jelas.
+            </p>
+          </div>
+          <a href={catalogHref()} class="btn btn-outline self-start sm:self-auto">
+            Lihat semua koleksi
+          </a>
+        </div>
+
+        <ul class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {featured.map((product) => (
+            <li>
+              <ProductCard product={product} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}

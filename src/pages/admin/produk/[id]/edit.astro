@@ -1,0 +1,27 @@
+---
+import AdminLayout from '../../../../layouts/AdminLayout.astro';
+import ProductForm from '../../../../components/admin/ProductForm.jsx';
+import { brands, categories, genderOptions, conditionOptions, getProductByIdAdmin } from '../../../../data/products';
+
+export const prerender = false;
+
+const { id } = Astro.params;
+const product = id ? await getProductByIdAdmin(id) : undefined;
+
+if (!product) {
+  return Astro.redirect('/admin/produk');
+}
+---
+
+<AdminLayout title={`Edit — ${product.brandName} ${product.model}`} active="produk">
+  <h1 class="font-serif text-2xl text-ink mb-6">Edit Produk</h1>
+  <ProductForm
+    client:load
+    brands={brands}
+    categories={categories}
+    genderOptions={genderOptions}
+    conditionOptions={conditionOptions}
+    initialProduct={product}
+    productId={product.id}
+  />
+</AdminLayout>

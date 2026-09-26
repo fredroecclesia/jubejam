@@ -1,0 +1,319 @@
+---
+import { listTestimonials } from '../../data/testimonials';
+import { productHref } from '../../data/products';
+
+// Slider testimoni satu-per-satu: foto besar di kiri (dengan kartu jam yang dibeli
+// di pojok kanan bawah), kutipan di kanan. Data dari tabel `testimonials`; kartu
+// jam diambil dari tabel `products` lewat join (brand, nama, foto, status).
+const testimonials = await listTestimonials();
+const total = testimonials.length;
+
+const arrowRight = `<svg viewBox="0 0 20 20" fill="none" class="h-4 w-4"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const arrowLeft = `<svg viewBox="0 0 20 20" fill="none" class="h-4 w-4"><path d="M16 10H4M9 5l-5 5 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+// Grid dua kolom yang sama dipakai slide dan baris kontrol, supaya tombol
+// prev/next sejajar dengan kolom kutipan di layar lebar.
+const gridCols = 'lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-14';
+---
+
+<section id="testimoni" class="bg-bg py-16 sm:py-24" aria-labelledby="testi-title">
+  <div class="mx-auto max-w-[1180px] px-5 sm:px-8">
+    <div class="mb-10 flex flex-col gap-3 sm:mb-12">
+      <p class="eyebrow flex items-center gap-6">
+        What they say
+        <span class="h-px w-[88px] bg-gold/70" aria-hidden="true"></span>
+      </p>
+      <h2 id="testi-title" class="section-title">
+        Voices of <em class="font-serif italic text-gold-light">Trust</em>
+      </h2>
+      <p class="section-lead !max-w-[44ch]">
+        Dengarkan pengalaman nyata dari mereka yang telah mempercayai Jubejam.
+      </p>
+    </div>
+
+    {total === 0 && (
+      <p class="rounded-lg border border-dashed border-hairline px-6 py-12 text-center text-ink-dim">
+        Belum ada testimoni.
+      </p>
+    )}
+
+    {total > 0 && (
+      <div class="relative" role="region" aria-roledescription="carousel" aria-label="Testimoni pelanggan">
+        <!--
+          Track: scroll-snap horizontal, satu slide penuh per layar. Bisa di-swipe (touch),
+          di-drag (mouse, klik-tahan lalu geser), atau lewat tombol prev/next.
+        -->
+        <ul
+          id="testiTrack"
+          class="scrollbar-none flex snap-x snap-mandatory gap-10 overflow-x-auto scroll-smooth"
+        >
+          {
+            testimonials.map((t, i) => (
+              <li
+                data-slide
+                aria-roledescription="slide"
+                aria-label={`${i + 1} dari ${total}`}
+                class="w-full shrink-0 snap-start"
+              >
+                <div class={`grid items-stretch gap-8 ${gridCols}`}>
+                  <!-- Foto + kartu jam -->
+                  <div class="relative aspect-[16/10] overflow-hidden rounded-[4px] border border-hairline bg-bg-panel">
+                    <img
+                      src={t.image}
+                      alt={t.imageAlt}
+                      loading={i === 0 ? 'eager' : 'lazy'}
+                      decoding="async"
+                      class="absolute inset-0 h-full w-full object-cover"
+                    />
+                    <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
+
+                    {t.product && (
+                      <a
+                        href={productHref(t.product)}
+                        class="absolute bottom-3 left-3 right-3 flex items-center gap-4 rounded-[4px] border border-hairline bg-black/85 p-3 backdrop-blur-sm transition-colors duration-200 hover:border-gold/60 sm:bottom-4 sm:left-auto sm:right-4 sm:w-[min(21rem,calc(100%-2rem))] sm:p-4"
+                      >
+                        <span class="flex h-[5.5rem] w-16 shrink-0 items-center justify-center">
+                          <img
+                            src={t.product.image}
+                            alt={t.product.imageAlt}
+                            loading="lazy"
+                            decoding="async"
+                            class="h-full w-full object-contain"
+                          />
+                        </span>
+                        <span class="min-w-0">
+                          <span class="eyebrow block !text-[0.65rem]">{t.product.brandName}</span>
+                          <span class="mt-1 line-clamp-2 block font-serif text-[1rem] leading-snug text-ink">
+                            {t.product.model}
+                          </span>
+                          <span class="mt-2 block text-[0.7rem] font-medium uppercase tracking-[0.25em] text-gold-light">
+                            {t.product.status === 'sold' ? 'Sold out' : 'Lihat detail →'}
+                          </span>
+                        </span>
+                      </a>
+                    )}
+                  </div>
+
+                  <!-- Kutipan -->
+                  <figure class={`flex flex-col ${total > 1 ? 'lg:pb-24' : ''}`}>
+                    <span
+                      aria-hidden="true"
+                      class="block select-none font-serif text-[4.5rem] leading-[0.8] text-gold/80"
+                    >
+                      &ldquo;
+                    </span>
+                    <blockquote class="mt-4 font-serif text-[clamp(1.3rem,2.2vw,1.95rem)] leading-[1.45] text-ink">
+                      <p>{t.quote}</p>
+                    </blockquote>
+                    <figcaption class="mt-8 flex items-start gap-5">
+                      <span class="mt-[0.7rem] h-px w-14 shrink-0 bg-gold/70" aria-hidden="true" />
+                      <span>
+                        <span class="block font-serif text-[1.05rem] text-gold-light">{t.name}</span>
+                        {t.role && <span class="mt-0.5 block text-[0.85rem] text-ink-dim">{t.role}</span>}
+                      </span>
+                    </figcaption>
+                  </figure>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+
+        {total > 1 && (
+          <!--
+            Kontrol: di mobile mengalir di bawah slide; di layar lebar ditempel di
+            kolom kanan (sejajar bawah foto) memakai grid yang sama dengan slide.
+          -->
+          <div class={`mt-8 lg:pointer-events-none lg:absolute lg:inset-x-0 lg:bottom-6 lg:mt-0 lg:grid ${gridCols}`}>
+            <div class="hidden lg:block" />
+            <div class="pointer-events-auto flex items-center justify-between">
+              <div class="flex gap-3">
+                <button
+                  id="testiPrev"
+                  type="button"
+                  aria-label="Testimoni sebelumnya"
+                  class="flex h-12 w-12 items-center justify-center rounded-[4px] border border-gold text-gold-light transition-colors duration-200 hover:bg-gold hover:text-[#14110A]"
+                  set:html={arrowLeft}
+                />
+                <button
+                  id="testiNext"
+                  type="button"
+                  aria-label="Testimoni berikutnya"
+                  class="flex h-12 w-12 items-center justify-center rounded-[4px] border border-gold text-gold-light transition-colors duration-200 hover:bg-gold hover:text-[#14110A]"
+                  set:html={arrowRight}
+                />
+              </div>
+              <p class="flex items-center gap-3 font-serif text-[0.95rem] text-ink-dim" aria-live="polite">
+                <span id="testiCurrent" class="text-gold-light">1</span>
+                <span>/</span>
+                <span>{total}</span>
+                <span class="ml-1 hidden h-px w-14 bg-gold/60 sm:block" aria-hidden="true" />
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  #testiTrack {
+    cursor: grab;
+  }
+  #testiTrack a {
+    cursor: inherit;
+  }
+  #testiTrack.is-dragging,
+  #testiTrack.is-dragging * {
+    cursor: grabbing !important;
+  }
+  #testiTrack.is-dragging {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+</style>
+
+<script>
+  const track = document.getElementById('testiTrack');
+
+  if (track) {
+    const slides = Array.from(track.querySelectorAll<HTMLElement>('[data-slide]'));
+    const count = slides.length;
+    const prevBtn = document.getElementById('testiPrev');
+    const nextBtn = document.getElementById('testiNext');
+    const currentEl = document.getElementById('testiCurrent');
+
+    // Jarak antar slide = lebar slide + gap.
+    const step = () => (count > 1 ? slides[1].offsetLeft - slides[0].offsetLeft : track.clientWidth);
+    const indexNow = () => Math.min(count - 1, Math.max(0, Math.round(track.scrollLeft / (step() || 1))));
+    const scrollToIndex = (i: number) => track.scrollTo({ left: i * step(), behavior: 'smooth' });
+
+    // ---------- Counter "1 / N" ----------
+    let shown = 0;
+    const syncCounter = () => {
+      const i = indexNow();
+      if (i !== shown) {
+        shown = i;
+        if (currentEl) currentEl.textContent = String(i + 1);
+      }
+    };
+    track.addEventListener('scroll', syncCounter, { passive: true });
+    window.addEventListener('resize', () => {
+      // Jaga slide tetap rapi setelah ukuran layar berubah.
+      track.style.scrollBehavior = 'auto';
+      track.scrollLeft = shown * step();
+      track.style.scrollBehavior = '';
+    });
+
+    // ---------- Tombol prev / next (wrap di ujung) ----------
+    prevBtn?.addEventListener('click', () => scrollToIndex((indexNow() - 1 + count) % count));
+    nextBtn?.addEventListener('click', () => scrollToIndex((indexNow() + 1) % count));
+
+    // ---------- Drag-to-scroll pakai mouse (touch/swipe jari tetap native) ----------
+    const DRAG_THRESHOLD = 5; // px sebelum gerakan dianggap drag, bukan klik biasa
+    const FLICK_SPEED = 0.35; // px/ms — di atas ini, lepas = pindah ke slide berikutnya/sebelumnya
+
+    let pressed = false;
+    let dragging = false;
+    let suppressClick = false;
+    let pointerId = -1;
+    let startX = 0;
+    let startScroll = 0;
+    let startIndex = 0;
+    let lastX = 0;
+    let lastT = 0;
+    let velocity = 0; // px/ms, arah gerak pointer
+
+    // Cegah drag bawaan browser pada gambar & tautan (penyebab umum drag "tidak mau jalan").
+    track.addEventListener('dragstart', (e) => e.preventDefault());
+    track.querySelectorAll('img, a').forEach((el) => el.setAttribute('draggable', 'false'));
+
+    track.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      pressed = true;
+      dragging = false;
+      suppressClick = false;
+      pointerId = e.pointerId;
+      startX = lastX = e.clientX;
+      startScroll = track.scrollLeft;
+      startIndex = indexNow();
+      lastT = performance.now();
+      velocity = 0;
+    });
+
+    track.addEventListener('pointermove', (e) => {
+      if (!pressed || e.pointerId !== pointerId) return;
+      if (e.buttons === 0) return endDrag(); // tombol dilepas di luar area track
+
+      const delta = e.clientX - startX;
+
+      if (!dragging) {
+        if (Math.abs(delta) < DRAG_THRESHOLD) return;
+        dragging = true;
+        suppressClick = true;
+        track.classList.add('is-dragging');
+        // Matikan snap & smooth selama drag supaya slide mengikuti kursor 1:1.
+        track.style.scrollSnapType = 'none';
+        track.style.scrollBehavior = 'auto';
+        track.setPointerCapture(pointerId);
+      }
+
+      const now = performance.now();
+      const dt = now - lastT;
+      if (dt > 0) velocity = 0.8 * velocity + 0.2 * ((e.clientX - lastX) / dt);
+      lastX = e.clientX;
+      lastT = now;
+
+      track.scrollLeft = startScroll - delta;
+    });
+
+    function endDrag() {
+      if (!pressed) return;
+      pressed = false;
+      if (!dragging) return;
+      dragging = false;
+
+      if (track!.hasPointerCapture(pointerId)) track!.releasePointerCapture(pointerId);
+      track!.classList.remove('is-dragging');
+
+      // Tentukan slide tujuan: flick cepat -> pindah satu slide sesuai arah,
+      // selain itu -> slide terdekat dari posisi lepas.
+      const idle = performance.now() - lastT > 80;
+      let target = indexNow();
+      if (!idle && velocity < -FLICK_SPEED) target = startIndex + 1;
+      else if (!idle && velocity > FLICK_SPEED) target = startIndex - 1;
+      target = Math.min(count - 1, Math.max(0, target));
+
+      track!.style.scrollBehavior = '';
+      track!.style.scrollSnapType = '';
+      scrollToIndex(target);
+    }
+
+    track.addEventListener('pointerup', endDrag);
+    track.addEventListener('pointercancel', endDrag);
+    track.addEventListener('lostpointercapture', endDrag);
+
+    // Setelah drag, batalkan klik berikutnya supaya menggeser tidak ikut membuka
+    // kartu jam yang kebetulan berada di bawah kursor saat tombol dilepas.
+    track.addEventListener(
+      'click',
+      (e) => {
+        if (suppressClick) {
+          e.preventDefault();
+          e.stopPropagation();
+          suppressClick = false;
+        }
+      },
+      { capture: true }
+    );
+  }
+</script>

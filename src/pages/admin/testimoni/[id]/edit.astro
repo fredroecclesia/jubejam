@@ -1,0 +1,26 @@
+---
+import AdminLayout from '../../../../layouts/AdminLayout.astro';
+import TestimonialForm from '../../../../components/admin/TestimonialForm.jsx';
+import { getTestimonialByIdAdmin } from '../../../../data/testimonials';
+import { listAllProductsAdmin } from '../../../../data/products';
+
+export const prerender = false;
+
+const { id } = Astro.params;
+const testimonial = id ? await getTestimonialByIdAdmin(id) : undefined;
+
+if (!testimonial) {
+  return Astro.redirect('/admin/testimoni');
+}
+
+const productOptions = (await listAllProductsAdmin()).map((p) => ({
+  id: p.id,
+  label: `${p.brandName} ${p.model} — ${p.reference}`,
+  sold: p.status === 'sold',
+}));
+---
+
+<AdminLayout title={`Edit — ${testimonial.name}`} active="testimoni">
+  <h1 class="font-serif text-2xl text-ink mb-6">Edit Testimoni</h1>
+  <TestimonialForm client:load initialTestimonial={testimonial} testimonialId={testimonial.id} productOptions={productOptions} />
+</AdminLayout>

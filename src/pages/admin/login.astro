@@ -1,0 +1,42 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const next = Astro.url.searchParams.get('next') ?? '/admin/produk';
+const error = Astro.url.searchParams.get('error');
+---
+
+<Layout title="Login Admin — Jubejam">
+  <main class="min-h-screen flex items-center justify-center px-4">
+    <div class="w-full max-w-sm border border-hairline bg-bg-panel rounded-lg p-8">
+      <h1 class="font-serif text-2xl text-ink mb-1">Admin Jubejam</h1>
+      <p class="text-sm text-ink-dim mb-6">Masuk untuk mengelola produk.</p>
+
+      {error && (
+        <p class="mb-4 text-sm text-[#F09595] bg-[#3a1f1f] border border-[#5a2f2f] rounded px-3 py-2">
+          Password salah, coba lagi.
+        </p>
+      )}
+
+      <form method="POST" action="/api/admin/login" class="space-y-4">
+        <input type="hidden" name="next" value={next} />
+        <div>
+          <label for="password" class="block text-sm text-ink-dim mb-1">Password</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            required
+            autofocus
+            class="w-full rounded border border-hairline bg-bg-panel-2 px-3 py-2 text-ink outline-none focus:border-gold"
+          />
+        </div>
+        <button
+          type="submit"
+          class="w-full rounded bg-gold text-[#14110A] font-medium py-2 hover:bg-gold-light transition-colors"
+        >
+          Masuk
+        </button>
+      </form>
+    </div>
+  </main>
+</Layout>

@@ -1,0 +1,119 @@
+---
+// Bagian atas halaman katalog: teks di kiri, tiga jam tanpa latar di kanan.
+// Setiap jam adalah pintasan ke kategori (hotspot).
+//
+// Gambar: /public/catalog/hero-watches.webp (aset desain, bukan data produk;
+// tidak ikut folder yang nanti dikelola CRUD).
+// Posisi hotspot (left/top) dalam persen terhadap gambar; sesuaikan kalau
+// gambar diganti. Label perlu dicocokkan dengan model jam di fotonya.
+const hotspots = [
+  { label: 'Datejust', href: '/produk?kategori=datejust', left: '17%', top: '61%' },
+  { label: 'Air-King', href: '/produk?kategori=air-king', left: '79%', top: '38%' },
+  { label: 'Sea-Dweller', href: '/produk?kategori=sea-dweller', left: '76%', top: '93%' },
+];
+
+// Diambil dari halaman FAQ.
+const trust = ['100% authentic or moneyback', 'Garansi 1 tahun', 'Asuransi pengiriman'];
+---
+
+<section aria-labelledby="catalog-title" class="border-b border-hairline bg-black">
+  <div class="mx-auto grid max-w-[1180px] items-center gap-8 px-5 py-10 sm:px-8 sm:py-14 md:grid-cols-2 md:gap-10">
+    <div>
+      <nav aria-label="Breadcrumb" class="text-[0.78rem] text-ink-dim">
+        <a href="/" class="transition-colors hover:text-ink">Home</a>
+        <span aria-hidden="true" class="mx-1.5">/</span>
+        <span aria-current="page" class="text-ink">Produk</span>
+      </nav>
+
+      <h1
+        id="catalog-title"
+        class="mt-4 max-w-[14ch] font-serif text-[clamp(2.2rem,4.6vw,3.6rem)] font-normal leading-[1.08] text-ink"
+      >
+        Katalog jam mewah
+      </h1>
+
+      <p class="mt-5 max-w-[44ch] text-[0.98rem] leading-relaxed text-ink-dim">
+        Preloved bersertifikat, setiap komponen diperiksa satu per satu. Pilih jam yang kamu suka, lalu tanya admin lewat
+        WhatsApp.
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-3.5">
+        <a
+          href="#daftar-jam"
+          class="inline-block rounded-[2px] bg-gold px-6 py-[13px] text-[0.9rem] font-semibold text-[#14110A] transition-all duration-200 hover:-translate-y-px hover:bg-gold-light"
+        >
+          Lihat semua jam
+        </a>
+        <a
+          href="/sell-my-watch"
+          class="inline-block rounded-[2px] border border-ink/35 px-6 py-[13px] text-[0.9rem] text-ink transition-colors duration-200 hover:border-ink-dim"
+        >
+          Jual jam Anda
+        </a>
+      </div>
+
+      <ul class="mt-7 flex flex-wrap gap-x-5 gap-y-1.5 text-[0.78rem] text-ink-dim">
+        {trust.map((t) => <li>{t}</li>)}
+      </ul>
+    </div>
+
+    <div class="relative mx-auto w-full max-w-[380px] md:ml-auto md:mr-0 md:max-w-[470px]">
+      <img
+        src="/catalog/hero-watches.webp"
+        alt="Tiga jam Rolex: Datejust dua warna, Air-King, dan Sea-Dweller"
+        width="487"
+        height="484"
+        fetchpriority="high"
+        decoding="async"
+        class="block h-auto w-full"
+      />
+      {
+        hotspots.map((h) => (
+          <a href={h.href} class="hotspot" style={`left:${h.left};top:${h.top}`} aria-label={`Lihat koleksi ${h.label}`}>
+            <i aria-hidden="true"></i>
+            {h.label}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .hotspot {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 11px 5px 8px;
+    border: 1px solid rgba(217, 190, 143, 0.55);
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.72);
+    color: #edeae2;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition:
+      background-color 0.2s,
+      border-color 0.2s,
+      color 0.2s;
+  }
+  .hotspot i {
+    display: block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #d9be8f;
+  }
+  .hotspot:hover,
+  .hotspot:focus-visible {
+    background: #b08d57;
+    border-color: #b08d57;
+    color: #14110a;
+  }
+  .hotspot:hover i,
+  .hotspot:focus-visible i {
+    background: #14110a;
+  }
+</style>

@@ -1,0 +1,26 @@
+---
+// Banner judul halaman FAQ: foto gelap full-bleed + judul di tengah.
+// Ganti foto dengan menimpa public/faq/faq-hero.webp (rasio ±3.2:1, min. 1920px lebar).
+interface Props {
+  title?: string;
+}
+const { title = "FAQ'S" } = Astro.props;
+---
+
+<section class="relative flex min-h-[220px] items-center justify-center overflow-hidden bg-black sm:min-h-[320px] lg:aspect-[1920/600] lg:min-h-0">
+  <img
+    src="/faq/faq-hero.webp"
+    alt=""
+    width="1920"
+    height="600"
+    decoding="async"
+    fetchpriority="high"
+    class="absolute inset-0 h-full w-full object-cover"
+  />
+  <!-- scrim tebal: foto dial-nya terang, judul putih harus tetap terbaca -->
+  <div class="pointer-events-none absolute inset-0 bg-black/70"></div>
+
+  <h1 class="relative px-5 text-center font-serif text-[clamp(2.5rem,6vw,5rem)] font-normal uppercase leading-none text-ink">
+    {title}
+  </h1>
+</section>

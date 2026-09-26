@@ -1,0 +1,84 @@
+---
+import { WHATSAPP_DISPLAY, WHATSAPP_URL } from '../../data/faqs';
+
+// Path ikon (gaya garis, viewBox 24). Dipakai di tombol dan baris keunggulan.
+const ICON = {
+  whatsapp: ['M7.9 20A9 9 0 1 0 4 16.1L2 22Z', 'M9 9.2c0 3 2.6 5.6 5.6 5.6l1-1.5-2-1-.9.8a4 4 0 0 1-1.8-1.8l.8-.9-1-2L9 9.2Z'],
+  store: [
+    'm2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7',
+    'M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8',
+    'M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4',
+    'M2 7h20',
+    'M22 7v3a2 2 0 0 1-2 2 2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7',
+  ],
+  shield: [
+    'M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z',
+    'm9 12 2 2 4-4',
+  ],
+  headset: [
+    'M3 11h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm0 0a9 9 0 1 1 18 0m0 0v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3Z',
+    'M21 16v2a4 4 0 0 1-4 4h-5',
+  ],
+};
+
+const perks = [
+  { icon: ICON.shield, title: 'Respon Cepat', text: 'Kami selalu siap membantu' },
+  { icon: ICON.headset, title: 'Layanan Profesional', text: 'Konsultasi tanpa biaya' },
+  { icon: ICON.whatsapp, title: 'WhatsApp 24/7', text: 'Hubungi kapan saja' },
+];
+---
+<section id="konsultasi" aria-labelledby="cta-title" class="bg-bg-panel py-16 sm:py-24">
+  <div class="mx-auto flex max-w-[980px] flex-col items-center px-5 text-center sm:px-8">
+    <div class="flex items-center gap-4 sm:gap-6">
+      <span class="h-px w-[clamp(32px,10vw,132px)] bg-gold" aria-hidden="true"></span>
+      <p class="eyebrow">Konsultasi</p>
+      <span class="h-px w-[clamp(32px,10vw,132px)] bg-gold" aria-hidden="true"></span>
+    </div>
+
+    <h2 id="cta-title" class="section-title mt-5 text-[clamp(2rem,4.6vw,3.6rem)]">
+      Ada jam yang Anda incar?
+      <em class="block font-normal italic text-gold-light">Tanya langsung ke admin kami.</em>
+    </h2>
+
+    <p class="section-lead mt-5 max-w-[52ch]">
+      Konsultasikan koleksi, ketersediaan, dan detail jam pilihan Anda bersama tim Jubejam.
+    </p>
+
+    <div class="mt-9 flex flex-wrap justify-center gap-4">
+      <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" class="btn btn-gold gap-3 px-8 py-4 text-[0.95rem]">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6" aria-hidden="true">
+          {ICON.whatsapp.map((d) => <path d={d} />)}
+        </svg>
+        Chat WhatsApp
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-[18px] w-[18px]" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6" />
+        </svg>
+      </a>
+      <a href="/contact-us" class="btn btn-outline gap-3 px-8 py-4 text-[0.95rem]">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6" aria-hidden="true">
+          {ICON.store.map((d) => <path d={d} />)}
+        </svg>
+        Kunjungi toko kami
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-[18px] w-[18px]" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6" />
+        </svg>
+      </a>
+    </div>
+
+    <ul class="mt-12 flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-0">
+      {
+        perks.map((p, i) => (
+          <li class:list={['flex items-center gap-3.5 text-left sm:px-8', i > 0 && 'sm:border-l sm:border-gold/70']}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 shrink-0 text-gold-light" aria-hidden="true">
+              {p.icon.map((d) => <path d={d} />)}
+            </svg>
+            <div>
+              <p class="text-[0.9rem] font-medium leading-tight text-ink">{p.title}</p>
+              <p class="mt-1 text-[0.78rem] leading-tight text-ink-dim">{p.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

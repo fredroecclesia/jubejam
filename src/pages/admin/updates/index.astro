@@ -1,0 +1,77 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { listAllUpdatesAdmin } from '../../../data/updates';
+
+export const prerender = false;
+
+const updates = await listAllUpdatesAdmin();
+---
+
+<AdminLayout title="Update" active="updates">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="font-serif text-2xl text-ink">Update</h1>
+      <p class="text-sm text-ink-dim">{updates.length} artikel total.</p>
+    </div>
+    <a href="/admin/updates/baru" class="rounded bg-gold text-[#14110A] font-medium px-4 py-2 text-sm hover:bg-gold-light transition-colors">
+      + Tambah Update
+    </a>
+  </div>
+
+  {updates.length === 0 ? (
+    <p class="text-ink-dim border border-dashed border-hairline rounded-lg px-6 py-12 text-center">
+      Belum ada update. Klik "Tambah Update" untuk mulai isi halaman Event &amp; Update.
+    </p>
+  ) : (
+    <div class="border border-hairline rounded-lg overflow-hidden">
+      <table class="w-full text-sm">
+        <thead class="bg-bg-panel-2 text-ink-dim text-left">
+          <tr>
+            <th class="px-4 py-3 font-normal">Foto</th>
+            <th class="px-4 py-3 font-normal">Artikel</th>
+            <th class="px-4 py-3 font-normal"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {updates.map((u) => (
+            <tr class="border-t border-hairline">
+              <td class="px-4 py-3">
+                <img src={u.image} alt={u.imageAlt} class="w-16 h-10 object-cover rounded" />
+              </td>
+              <td class="px-4 py-3 text-ink">{u.title}</td>
+              <td class="px-4 py-3 text-right space-x-3 whitespace-nowrap">
+                <a href={`/admin/updates/${u.id}/edit`} class="text-gold-light hover:underline">Edit</a>
+                <button
+                  type="button"
+                  class="text-[#F09595] hover:underline js-delete-update"
+                  data-id={u.id}
+                  data-nama={u.title}
+                >
+                  Hapus
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+</AdminLayout>
+
+<script>
+  document.querySelectorAll('.js-delete-update').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const id = btn.getAttribute('data-id');
+      const nama = btn.getAttribute('data-nama');
+      if (!confirm(`Hapus update "${nama}"? Tindakan ini tidak bisa dibatalkan.`)) return;
+
+      const res = await fetch(`/api/admin/updates/${id}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error ?? 'Gagal menghapus update.');
+        return;
+      }
+      window.location.reload();
+    });
+  });
+</script>

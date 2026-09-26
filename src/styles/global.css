@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Tinggi header sticky. Nilai awal cuma perkiraan supaya tidak ada lompatan
+     sebelum JS jalan; Header.astro menimpanya dengan hasil ukur sebenarnya. */
+  :root {
+    --header-h: 4.25rem;
+  }
+  * {
+    @apply box-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  /* Header sticky ikut memakan ruang di atas: tanpa ini, tautan #anchor
+     (mis. dari footer atau tombol hero) mendarat di bawah header. */
+  section[id] {
+    scroll-margin-top: calc(var(--header-h) + 0.5rem);
+  }
+  body {
+    @apply bg-bg text-ink font-sans antialiased overflow-x-hidden;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  ::selection {
+    background: rgba(201, 164, 107, 0.35);
+  }
+  a:focus-visible,
+  button:focus-visible {
+    outline: 1.5px solid theme('colors.gold.light');
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* Panggung hero: menempel tepat di bawah header sticky dan setinggi sisa layar,
+     jadi bagian bawah hero (cue SCROLL, tombol) tidak terpotong di luar layar.
+     100svh = tinggi layar dengan toolbar browser mobile; 100vh jadi cadangan. */
+  .hero-stage {
+    position: sticky;
+    top: var(--header-h);
+    height: calc(100vh - var(--header-h));
+    height: calc(100svh - var(--header-h));
+  }
+
+  /* dipakai di HeroFrameSequence untuk vignette di atas canvas */
+  .hero-vignette-bg {
+    background:
+      radial-gradient(ellipse at 50% 45%, transparent 40%, rgba(0, 0, 0, 0.55) 100%),
+      linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.35) 0%,
+        transparent 18%,
+        transparent 78%,
+        rgba(0, 0, 0, 0.55) 100%
+      );
+  }
+}
+
+
+/* Sistem komponen bersama: satu gaya heading & satu bentuk tombol (pill,
+   mengikuti CTA header) supaya semua section terasa satu keluarga. */
+@layer components {
+  .eyebrow {
+    @apply font-sans text-[0.72rem] font-medium uppercase tracking-[0.3em] text-gold-light;
+  }
+  .section-title {
+    @apply font-serif text-[clamp(1.75rem,3.4vw,2.8rem)] font-medium leading-[1.12] text-ink;
+  }
+  .section-lead {
+    @apply max-w-[58ch] text-[0.98rem] leading-relaxed text-ink-dim;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-full px-6 py-3 text-[0.9rem] font-medium transition-all duration-200;
+  }
+  .btn-gold {
+    @apply text-[#14110A] hover:-translate-y-px hover:brightness-110;
+    background-image: linear-gradient(100deg, #e9c98f, #d2a265);
+  }
+  .btn-outline {
+    @apply border border-gold text-gold-light hover:bg-gold hover:text-[#14110A];
+  }
+  .btn-ghost {
+    @apply border border-ink/40 text-ink hover:border-gold-light hover:text-gold-light;
+  }
+}

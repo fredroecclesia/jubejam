@@ -1,0 +1,11 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import EventForm from '../../../components/admin/EventForm.jsx';
+
+export const prerender = false;
+---
+
+<AdminLayout title="Tambah Event" active="events">
+  <h1 class="font-serif text-2xl text-ink mb-6">Tambah Event</h1>
+  <EventForm client:load />
+</AdminLayout>

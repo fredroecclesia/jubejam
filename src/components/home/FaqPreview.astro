@@ -1,0 +1,48 @@
+---
+import { faqs, WHATSAPP_DISPLAY, WHATSAPP_URL } from '../../data/faqs';
+
+// Cuplikan 4 pertanyaan pertama; daftar lengkap ada di /faqs.
+const items = faqs.slice(0, 4);
+---
+<section id="faq" aria-labelledby="faq-title" class="bg-bg py-16 sm:py-24">
+  <div class="mx-auto grid max-w-[1180px] gap-10 px-5 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
+    <div class="flex flex-col gap-3 lg:sticky lg:top-28 lg:self-start">
+      <p class="eyebrow">FAQ</p>
+      <h2 id="faq-title" class="section-title">Pertanyaan yang sering diajukan</h2>
+      <p class="section-lead">Cara membeli, harga, dan jaminan keaslian, dijawab singkat.</p>
+      <div class="mt-4">
+        <a href="/faqs" class="btn btn-outline">Lihat semua FAQ</a>
+      </div>
+    </div>
+
+    <div class="border-t border-hairline">
+      {
+        items.map((item) => (
+          <details name="home-faq" class="group border-b border-hairline">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-left transition-colors duration-200 hover:text-gold-light [&::-webkit-details-marker]:hidden">
+              <h3 class="text-[1.02rem] font-medium leading-snug">{item.question}</h3>
+              <svg viewBox="0 0 12 12" class="h-3 w-3 flex-shrink-0 rotate-180 fill-current transition-transform duration-300 group-open:rotate-0" aria-hidden="true">
+                <path d="M6 2.5 11 9.5H1z" />
+              </svg>
+            </summary>
+            <div class="space-y-3 pb-6 text-[0.95rem] leading-relaxed text-ink/90">
+              {item.answer.map((p) =>
+                p.includes(WHATSAPP_DISPLAY) ? (
+                  <p>
+                    {p.split(WHATSAPP_DISPLAY)[0]}
+                    <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" class="text-gold-light underline underline-offset-4 hover:text-ink">
+                      {WHATSAPP_DISPLAY}
+                    </a>
+                    {p.split(WHATSAPP_DISPLAY)[1]}
+                  </p>
+                ) : (
+                  <p>{p}</p>
+                )
+              )}
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>

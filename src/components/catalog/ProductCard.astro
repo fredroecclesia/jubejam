@@ -1,0 +1,50 @@
+---
+import { formatRupiah, productBadge, productHref, productTitle, type Product } from '../../data/products';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+const sold = product.status === 'sold';
+const badge = productBadge(product);
+---
+
+<article
+  class:list={[
+    'group relative flex h-full flex-col overflow-hidden rounded-xl border border-hairline bg-bg-panel transition-colors duration-200 hover:border-gold',
+    sold && 'opacity-60',
+  ]}
+>
+  <div class="relative aspect-[4/5] overflow-hidden bg-bg-panel-2">
+    <img
+      src={product.image}
+      alt={product.imageAlt}
+      width="800"
+      height="1000"
+      loading="lazy"
+      decoding="async"
+      class="h-full w-full object-cover transition-transform duration-[1500ms] ease-out group-hover:scale-105"
+    />
+    <span class:list={['absolute left-3 top-3 rounded-full px-2.5 py-1 text-[0.7rem] font-medium', badge.className]}>
+      {badge.label}
+    </span>
+  </div>
+
+  <div class="flex flex-1 flex-col p-4 text-center">
+    <p class="font-mono text-[0.7rem] tracking-[1.5px] text-gold-light">{product.brandName}</p>
+    <h3 class="mt-1.5 text-[0.98rem] font-medium leading-snug text-ink">
+      {/* Stretched link: ::after menutupi seluruh kartu, jadi seluruh kartu bisa diklik.
+          Ring fokus digambar di dalam kartu karena kartu overflow-hidden akan memotong outline di luar tepi. */}
+      <a
+        href={productHref(product)}
+        class="after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none focus-visible:after:outline focus-visible:after:outline-[1.5px] focus-visible:after:-outline-offset-[3px] focus-visible:after:outline-gold-light"
+      >
+        {productTitle(product)}
+      </a>
+    </h3>
+
+    {/* mt-auto: harga selalu rata di dasar kartu walau panjang judul berbeda-beda. */}
+    <p class="mt-auto pt-4 text-[1.05rem] font-medium text-ink">{sold ? 'Terjual' : formatRupiah(product.price)}</p>
+  </div>
+</article>

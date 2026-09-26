@@ -1,0 +1,53 @@
+---
+// Bagian atas halaman Events & Updates: teks di kiri, foto jam tanpa latar di kanan.
+// Pola sama dengan CatalogHero (tanpa hotspot).
+//
+// Gambar: /public/events/events-hero-watches.webp (WebP transparan 900x900, tiga jam:
+// Datejust 41 biru, Submariner biru-emas, Daytona champagne). Ganti dengan menimpa file itu,
+// atau taruh file lain di /public/events/ lalu ubah default `image`. Jangan pakai foto yang
+// sudah memuat tulisan di dalamnya.
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  imageAlt?: string;
+}
+const {
+  title = 'Events & Updates',
+  description = 'Promo yang sedang berjalan, kabar koleksi baru, dan panduan seputar jam mewah dari tim Jubejam.',
+  image = '/events/events-hero-watches.webp',
+  imageAlt = 'Tiga jam Rolex: Datejust 41 dial biru, Submariner biru-emas, dan Daytona champagne',
+} = Astro.props;
+---
+
+<section aria-labelledby="events-title" class="border-b border-hairline bg-black">
+  <div class="mx-auto grid max-w-[1180px] items-center gap-8 px-5 py-10 sm:px-8 sm:py-14 md:grid-cols-2 md:gap-10">
+    <div>
+      <nav aria-label="Breadcrumb" class="text-[0.78rem] text-ink-dim">
+        <a href="/" class="transition-colors hover:text-ink">Home</a>
+        <span aria-hidden="true" class="mx-1.5">/</span>
+        <span aria-current="page" class="text-ink">{title}</span>
+      </nav>
+
+      <h1 id="events-title" class="mt-4 font-serif text-[clamp(2.2rem,4.6vw,3.6rem)] font-normal leading-[1.08] text-ink">
+        {title}
+      </h1>
+
+      <p class="mt-5 max-w-[44ch] text-[0.98rem] leading-relaxed text-ink-dim">
+        {description}
+      </p>
+    </div>
+
+    <div class="mx-auto w-full max-w-[320px] md:ml-auto md:mr-0 md:max-w-[400px]">
+      <img
+        src={image}
+        alt={imageAlt}
+        width="900"
+        height="900"
+        fetchpriority="high"
+        decoding="async"
+        class="block h-auto w-full"
+      />
+    </div>
+  </div>
+</section>

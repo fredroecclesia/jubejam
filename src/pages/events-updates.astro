@@ -1,0 +1,98 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/common/Header.astro';
+import Footer from '../components/common/Footer.astro';
+import EventsHero from '../components/events/EventsHero.astro';
+import EventPhoto from '../components/events/EventPhoto.astro';
+import UpdateList from '../components/events/UpdateList.astro';
+import { WHATSAPP_URL } from '../data/faqs';
+import { getFeaturedEvent, listGridEvents } from '../data/events';
+import { listUpdates } from '../data/updates';
+
+export const prerender = false;
+
+const [featuredEvent, gridEventsRaw, updatesRaw] = await Promise.all([
+  getFeaturedEvent(),
+  listGridEvents(),
+  listUpdates(),
+]);
+
+// Data admin disimpan sebagai image/imageAlt; komponen update pakai src/alt.
+const updates = updatesRaw.map((u) => ({
+  src: u.image,
+  alt: u.imageAlt,
+  href: u.href,
+}));
+---
+
+<Layout
+  title="Events & Updates — Jubejam"
+  description="Promo yang sedang berjalan, kabar koleksi baru, dan panduan seputar jam mewah dari tim Jubejam."
+>
+  <Header />
+
+  <main>
+    <EventsHero />
+
+    <section id="event" class="bg-bg py-12 sm:py-16">
+      <div class="mx-auto max-w-[1180px] px-5 sm:px-8">
+        <h2 class="font-serif text-[clamp(1.6rem,3vw,2.2rem)] font-normal leading-tight text-ink">Event</h2>
+
+        {featuredEvent && (
+          <div class="mt-6">
+            <EventPhoto src={featuredEvent.image} alt={featuredEvent.imageAlt} href={featuredEvent.href} variant="featured" />
+          </div>
+        )}
+
+        {gridEventsRaw.length > 0 ? (
+          <ul class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
+            {gridEventsRaw.map((ev) => (
+              <li>
+                <EventPhoto src={ev.image} alt={ev.imageAlt} href={ev.href} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          !featuredEvent && (
+            <p class="mt-6 text-ink-dim border border-dashed border-hairline rounded-lg px-6 py-12 text-center">
+              Belum ada event yang tayang. Pantau terus halaman ini untuk promo terbaru.
+            </p>
+          )
+        )}
+      </div>
+    </section>
+
+    {updates.length > 0 && <UpdateList updates={updates} />}
+
+    <section class="border-t border-hairline bg-bg py-14 sm:py-16">
+      <div class="mx-auto grid max-w-[1180px] gap-6 px-5 sm:px-8 md:grid-cols-[1.4fr_1fr] md:items-center">
+        <div>
+          <h2 class="max-w-[20ch] font-serif text-[clamp(1.6rem,3vw,2.2rem)] font-normal leading-tight text-ink">
+            Jangan lewatkan promo dan koleksi terbaru
+          </h2>
+          <p class="mt-3 max-w-[46ch] text-[0.95rem] leading-relaxed text-ink-dim">
+            Chat admin untuk tanya ketersediaan jam, atau pantau halaman ini secara berkala untuk update terbaru.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-3 md:justify-end">
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener"
+            class="inline-flex items-center justify-center rounded-full bg-gold px-6 py-[13px] text-[0.9rem] font-semibold text-[#14110A] transition-colors duration-200 hover:bg-gold-light"
+          >
+            Chat admin
+          </a>
+          <a
+            href="/produk"
+            class="inline-flex items-center justify-center rounded-full border border-gold px-6 py-[13px] text-[0.9rem] font-semibold text-gold-light transition-colors duration-200 hover:bg-gold hover:text-[#14110A]"
+          >
+            Lihat katalog
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

@@ -1,0 +1,19 @@
+---
+import AdminLayout from '../../../../layouts/AdminLayout.astro';
+import UpdateForm from '../../../../components/admin/UpdateForm.jsx';
+import { getUpdateByIdAdmin } from '../../../../data/updates';
+
+export const prerender = false;
+
+const { id } = Astro.params;
+const update = id ? await getUpdateByIdAdmin(id) : undefined;
+
+if (!update) {
+  return Astro.redirect('/admin/updates');
+}
+---
+
+<AdminLayout title={`Edit — ${update.title}`} active="updates">
+  <h1 class="font-serif text-2xl text-ink mb-6">Edit Update</h1>
+  <UpdateForm client:load initialUpdate={update} updateId={update.id} />
+</AdminLayout>

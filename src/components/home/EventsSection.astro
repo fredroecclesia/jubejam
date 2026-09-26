@@ -1,0 +1,49 @@
+---
+// Section "Event" di homepage: hanya foto/banner event (tanpa badge, judul,
+// deskripsi, atau tombol; semua teks sudah ada di gambar banner-nya).
+// Event unggulan tampil besar, lalu maksimal 3 event lain di bawahnya.
+// Tiap foto bisa diklik ke link event. Diletakkan tepat sebelum "Baru datang".
+// Kalau belum ada event, section tetap tampil dengan pesan kosong.
+import EventPhoto from '../events/EventPhoto.astro';
+import { getFeaturedEvent, listAllEventsPublic } from '../../data/events';
+
+const all = await listAllEventsPublic();
+const featured = (await getFeaturedEvent()) ?? all[0];
+const others = all.filter((ev) => ev.id !== featured?.id).slice(0, 3);
+---
+<section id="event" aria-labelledby="event-title" class="bg-bg-panel py-16 sm:py-24">
+  <div class="mx-auto max-w-[1180px] px-5 sm:px-8">
+    <div class="mb-10 flex flex-col gap-5 sm:mb-12 sm:flex-row sm:items-end sm:justify-between">
+      <div class="flex flex-col gap-3">
+        <p class="eyebrow">Event</p>
+        <h2 id="event-title" class="section-title">Promo dan event terbaru</h2>
+        <p class="section-lead">Penawaran khusus dan acara dari Jubejam yang sedang atau akan berlangsung.</p>
+      </div>
+      <a href="/events-updates#event" class="btn btn-outline self-start sm:self-auto">
+        Lihat semua event
+      </a>
+    </div>
+
+    {
+      featured ? (
+        <div class="flex flex-col gap-5">
+          <EventPhoto src={featured.image} alt={featured.imageAlt} href={featured.href} variant="featured" />
+
+          {others.length > 0 && (
+            <ul class="grid grid-cols-1 gap-5 sm:grid-cols-3">
+              {others.map((ev) => (
+                <li>
+                  <EventPhoto src={ev.image} alt={ev.imageAlt} href={ev.href} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      ) : (
+        <p class="rounded-lg border border-dashed border-hairline px-6 py-12 text-center text-ink-dim">
+          Belum ada event yang tayang. Pantau terus halaman ini untuk promo terbaru.
+        </p>
+      )
+    }
+  </div>
+</section>

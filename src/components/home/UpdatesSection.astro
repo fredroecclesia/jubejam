@@ -1,0 +1,39 @@
+---
+// Section "Update" di homepage: 3 update terbaru, foto saja (semua teks sudah
+// ada di gambar). Diletakkan tepat sebelum FAQ singkat.
+// Kalau belum ada update, section tetap tampil dengan pesan kosong.
+import EventPhoto from '../events/EventPhoto.astro';
+import { listUpdates } from '../../data/updates';
+
+const updates = (await listUpdates()).slice(0, 3);
+---
+<section id="update" aria-labelledby="update-title" class="bg-bg-panel py-16 sm:py-24">
+  <div class="mx-auto max-w-[1180px] px-5 sm:px-8">
+    <div class="mb-10 flex flex-col gap-5 sm:mb-12 sm:flex-row sm:items-end sm:justify-between">
+      <div class="flex flex-col gap-3">
+        <p class="eyebrow">Update</p>
+        <h2 id="update-title" class="section-title">Kabar dan panduan dari Jubejam</h2>
+        <p class="section-lead">Kabar koleksi, panduan memilih, dan pengetahuan seputar jam mewah.</p>
+      </div>
+      <a href="/events-updates#update" class="btn btn-outline self-start sm:self-auto">
+        Lihat semua update
+      </a>
+    </div>
+
+    {
+      updates.length > 0 ? (
+        <ul class="grid grid-cols-1 gap-5 md:grid-cols-3">
+          {updates.map((item) => (
+            <li>
+              <EventPhoto src={item.image} alt={item.imageAlt} href={item.href} variant="update" />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="rounded-lg border border-dashed border-hairline px-6 py-12 text-center text-ink-dim">
+          Belum ada update. Pantau terus halaman ini untuk kabar dan panduan terbaru.
+        </p>
+      )
+    }
+  </div>
+</section>

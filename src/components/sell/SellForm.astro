@@ -1,0 +1,152 @@
+---
+// Form "Sell My Watch": data diisi lalu diteruskan sebagai pesan WhatsApp
+// (bukan disimpan ke database — link wa.me tidak bisa membawa lampiran file,
+// jadi customer diminta mengirim foto langsung di chat WhatsApp yang terbuka).
+//
+// PENTING: lebar & center container ditulis lewat <style> biasa (class
+// "sell-form-container"), BUKAN Tailwind arbitrary class (mis. max-w-[720px]).
+// Sebelumnya class arbitrary itu tidak ikut ter-generate di environment
+// deploy, sehingga form melebar penuh ke tepi layar. Plain CSS di <style>
+// scoped Astro selalu ikut ter-bundle, jadi ini jauh lebih aman.
+import { WHATSAPP_URL } from '../../data/faqs';
+
+const NOTE_TEXT =
+  'Harga yang ingin didapatkan merupakan harga yang akan kami berikan kepada penitip/penjual. Bukan harga Jual kepada customer. Harga jual akan ditentukan pada team Jubejam. Terima kasih';
+
+const fields = [
+  {
+    id: 'customerInfo',
+    label: 'Nama Customer Dan Nomor Handphone',
+    placeholder: 'Cth: Budi Santoso, 0812xxxxxxx',
+  },
+  {
+    id: 'watchBrand',
+    label: 'Merek dan Nama',
+    placeholder: 'Cth: Rolex Submariner Date',
+  },
+  {
+    id: 'desiredPrice',
+    label: 'Harga yang Diinginkan',
+    placeholder: 'Cth: Rp 150.000.000',
+  },
+];
+---
+
+<section class="bg-black py-14 sm:py-20" id="jual-form">
+  <div class="sell-form-container">
+    <div class="rounded-lg border border-hairline bg-bg-panel p-6 sm:p-10">
+      <p class="text-base leading-relaxed text-ink-dim">
+        Isi data jam Anda di bawah ini. Setelah menekan <span class="text-ink">Send</span>, Anda akan diarahkan ke WhatsApp admin kami untuk melanjutkan proses penjualan.
+      </p>
+
+      <form id="sellWatchForm" class="mt-8 flex flex-col gap-6" novalidate>
+        {
+          fields.map((field) => (
+            <div class="flex flex-col gap-2">
+              <label for={field.id} class="text-sm font-medium uppercase tracking-wide text-ink-dim sm:text-base">
+                {field.label}
+              </label>
+              <input
+                id={field.id}
+                name={field.id}
+                type="text"
+                required
+                placeholder={field.placeholder}
+                class="w-full rounded-md border border-hairline bg-black/40 px-4 py-3.5 text-base text-ink placeholder:text-ink-dim/60 outline-none transition-colors focus:border-gold sm:text-lg"
+              />
+            </div>
+          ))
+        }
+
+        <div class="flex flex-col gap-2">
+          <span class="text-sm font-medium uppercase tracking-wide text-ink-dim sm:text-base">Upload Picture</span>
+          <input
+            id="watchPictures"
+            name="watchPictures"
+            type="file"
+            accept="image/*"
+            multiple
+            class="w-full rounded-md border border-hairline bg-black/40 px-3 py-3 text-sm text-ink-dim file:mr-4 file:cursor-pointer file:rounded file:border-0 file:bg-gold file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black file:transition-colors hover:file:bg-gold-light sm:text-base"
+          />
+          <p class="text-sm leading-relaxed text-ink-dim sm:text-base">
+            Link WhatsApp tidak bisa membawa foto secara otomatis — setelah chat terbuka, lampirkan foto yang sama langsung di sana.
+          </p>
+        </div>
+
+        <div class="rounded-md border-l-4 border-gold bg-black/30 px-4 py-3.5">
+          <span class="text-sm font-semibold uppercase tracking-wide text-gold-light sm:text-base">Note*</span>
+          <p class="mt-1.5 text-sm leading-relaxed text-ink-dim sm:text-base">
+            {NOTE_TEXT}
+          </p>
+        </div>
+
+        <p id="sellFormError" class="hidden text-base text-red-400" role="alert">
+          Mohon lengkapi Nama &amp; Nomor Handphone, Merek dan Nama, serta Harga yang Diinginkan.
+        </p>
+
+        <button
+          type="submit"
+          class="mt-2 w-full rounded-full bg-gold py-4 text-center text-base font-semibold uppercase tracking-wide text-black transition-all duration-200 hover:-translate-y-px hover:bg-gold-light"
+        >
+          Send
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sell-form-container {
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .sell-form-container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+</style>
+
+<script define:vars={{ whatsappUrl: WHATSAPP_URL, noteText: NOTE_TEXT }}>
+  const form = document.getElementById('sellWatchForm');
+  const errorEl = document.getElementById('sellFormError');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const customerInfo = document.getElementById('customerInfo').value.trim();
+    const watchBrand = document.getElementById('watchBrand').value.trim();
+    const desiredPrice = document.getElementById('desiredPrice').value.trim();
+    const fileInput = document.getElementById('watchPictures');
+    const fileNames = fileInput?.files ? Array.from(fileInput.files).map((f) => f.name) : [];
+
+    if (!customerInfo || !watchBrand || !desiredPrice) {
+      errorEl?.classList.remove('hidden');
+      return;
+    }
+    errorEl?.classList.add('hidden');
+
+    const lines = [
+      'Halo Jubejam, saya ingin menjual jam saya:',
+      '',
+      `Nama Customer Dan Nomor Handphone: ${customerInfo}`,
+      `Merek dan Nama: ${watchBrand}`,
+      `Harga Yang Diinginkan: ${desiredPrice}`,
+    ];
+
+    if (fileNames.length > 0) {
+      lines.push(`Foto: ${fileNames.join(', ')} (akan saya kirim menyusul di chat ini)`);
+    }
+
+    lines.push('', `Note: ${noteText}`);
+
+    const message = lines.join('\n');
+    const target = `${whatsappUrl}?text=${encodeURIComponent(message)}`;
+
+    window.open(target, '_blank', 'noopener');
+  });
+</script>

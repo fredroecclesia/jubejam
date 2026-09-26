@@ -1,0 +1,64 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/common/Header.astro';
+import Footer from '../components/common/Footer.astro';
+import HeroFrameSequence from '../components/home/HeroFrameSequence.jsx';
+import TrustStrip from '../components/home/TrustStrip.astro';
+import FeaturedProducts from '../components/home/FeaturedProducts.astro';
+import CollectionExplorer from '../components/home/CollectionExplorer.astro';
+import ProcessSection from '../components/home/ProcessSection.astro';
+import VideoSection from '../components/home/VideoSection.astro';
+import TestimonialSection from '../components/home/TestimonialSection.astro';
+import SellSection from '../components/home/SellSection.astro';
+import OfflineStoreSection from '../components/home/OfflineStoreSection.astro';
+import EventsSection from '../components/home/EventsSection.astro';
+import UpdatesSection from '../components/home/UpdatesSection.astro';
+import FaqPreview from '../components/home/FaqPreview.astro';
+import FinalCta from '../components/home/FinalCta.astro';
+---
+
+<Layout>
+  <Header />
+
+  <main>
+    <!-- 1. Janji: hero animasi (client:load karena section paling atas, harus siap saat scroll dimulai).
+            Tombol "Lihat proses kami" di hero mengarah ke #proses (ProcessSection, no. 6). -->
+    <HeroFrameSequence client:load />
+
+    <!-- 2. Bukti ringkas: jaminan keaslian, quality check, garansi, jumlah terjual -->
+    <TrustStrip />
+
+    <!-- 3. Event unggulan + event lain (id="event"), tepat sebelum "Baru datang" -->
+    <EventsSection />
+
+    <!-- 4. Produk nyata: 4 jam terbaru yang tersedia ("Baru datang") -->
+    <FeaturedProducts />
+
+    <!-- 5. Jelajah: Model / Brand / Gender dalam satu section bertab -->
+    <CollectionExplorer />
+
+    <!-- 6. Proses pemeriksaan (id="proses"), disusul video (id="video"); keduanya satu alur cerita -->
+    <ProcessSection />
+    <VideoSection />
+
+    <!-- 7. Testimoni pelanggan -->
+    <TestimonialSection />
+
+    <!-- 8. Sisi lain bisnis: jual / consignment / tukar tambah -->
+    <SellSection />
+
+    <!-- 9. Toko offline -->
+    <OfflineStoreSection />
+
+    <!-- 10. Update terbaru (id="update"), tepat sebelum FAQ singkat -->
+    <UpdatesSection />
+
+    <!-- 11. FAQ singkat -->
+    <FaqPreview />
+
+    <!-- 12. Ajakan penutup: WhatsApp -->
+    <FinalCta />
+  </main>
+
+  <Footer />
+</Layout>
